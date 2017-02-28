@@ -3,12 +3,12 @@
 Write a one-sentence summary of the project and a list of the features that are absolutely necessary. Order these by importance and use the list to guide your development.
 
 In this game, users will be able to:
-[ ] Start, pause, and quit the game
-[ ] Rotate, speed up the descent of Tetrimonos, and allow the Tetriminos to drop immediately
+- [ ] Start, pause, and quit the game
+- [ ] Rotate, speed up the descent of Tetrimonos, and allow the Tetriminos to drop immediately
 
 In addition, this project will include:
-[ ] Instructions on how to play the game, in a sidebar
-[ ] A production README
+- [ ] Instructions on how to play the game, in a sidebar
+- [ ] A production README
 
 
 #Wireframes#
@@ -47,6 +47,6 @@ There will be three scripts in addition to the webpack entry file in this projec
 
 
 #Bonus features#
-[ ] Spin pieces left
-[ ] Hold a piece
-[ ] Choose a level when starting the game
+- [ ] Spin pieces left
+- [ ] Hold a piece
+- [ ] Choose a level when starting the game
