@@ -1,0 +1,9 @@
+body, div, ul, li, header, h1 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-weight: inherit;
+  color: inherit;
+  background: transparent;
+  list-style: none;
+}

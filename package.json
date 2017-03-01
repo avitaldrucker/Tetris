@@ -1,0 +1,28 @@
+{
+  "name": "Tetris",
+  "version": "1.0.0",
+  "description": "In this game, users will be able to: - [ ] Start, pause, and quit the game - [ ] Rotate, speed up the descent of Tetrimonos, and allow the Tetriminos to drop immediately",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "webpack-dev-server --progress --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avitaldrucker/Tetris.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/avitaldrucker/Tetris/issues"
+  },
+  "homepage": "https://github.com/avitaldrucker/Tetris#readme",
+  "dependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015": "^6.22.0",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
+  }
+}
