@@ -1,7 +1,5 @@
 #Functionality and MVP#
 
-Write a one-sentence summary of the project and a list of the features that are absolutely necessary. Order these by importance and use the list to guide your development.
-
 In this game, users will be able to:
 - [ ] Start, pause, and quit the game
 - [ ] Rotate, speed up the descent of Tetrimonos, and allow the Tetriminos to drop immediately
@@ -20,8 +18,8 @@ This app will consist of a single screen with game board, preview screen for the
 #Architecture and Technologies#
 
 This project will be implemented with the following technologies:
-* Vanilla JavaScript and jQuery for starting the game, pausing the game, and quitting the game
-* HTML5 Canvas for DOM manipulation and rendering, specifically drawing the game's grid and the moving pieces
+* Vanilla DOM for starting the game, pausing the game, and quitting the game;
+* HTML5 Canvas for drawing the game's grid and the moving pieces; and
 * Webpack to bundle and serve up the various scripts.
 
 There will be three scripts in addition to the webpack entry file in this project:
