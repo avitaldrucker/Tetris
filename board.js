@@ -48,32 +48,18 @@ class Board {
   }
 
   spawnPiece() {
-    return new Piece(this, "L");
+    return new Piece(this, Piece.randomPieceOptions());
   }
 
-  // fallingPiece() {
-  //   for (let row = 0; row < this.grid.length; row++) {
-  //     for (let col = 0; col < this.grid[0].length; col++) {
-  //       let piece = this.grid[row][col];
-  //       if (piece && piece.falling()) {
-  //         return piece;
-  //       }
-  //     }
-  //   }
-  //
-  // }
-
   moveLeft() {
-    const fallingPiece = this.fallingPiece();
-    if (fallingPiece) {
-      fallingPiece.moveLeft();
+    if (this.fallingPiece) {
+      this.fallingPiece.moveLeft();
     }
   }
 
   moveRight() {
-    const fallingPiece = this.fallingPiece();
-    if (fallingPiece) {
-      fallingPiece.moveRight();
+    if (this.fallingPiece) {
+      this.fallingPiece.moveRight();
     }
   }
 

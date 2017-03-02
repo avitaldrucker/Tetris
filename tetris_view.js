@@ -41,9 +41,5 @@ class View {
 
 }
 
-View.MOVES = {
-  "a": [-1, 0],
-  "d": [1, 0]
-}
 
 module.exports = View;
