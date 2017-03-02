@@ -10,7 +10,7 @@ class Board {
       this.grid[i] = this.emptyRow();
     }
     this.rowsCleared = 0;
-    this.piecesFallen = 0;
+    this.piecesFallen = -1;
   }
 
   emptyRow() {

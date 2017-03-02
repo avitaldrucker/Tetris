@@ -37,8 +37,6 @@ class View {
   animate(time) {
     const timeDelta = time - this.lastTime;
     this.game.step(timeDelta);
-    // this.game.draw(this.ctx);
-    this.lastTime = time;
 
     requestAnimationFrame(this.animate.bind(this));
   }
