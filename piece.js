@@ -5,13 +5,17 @@ class Piece {
   }
 
   moveLeft() {
-    if (!this.fallen() && !this.aboveTop() && !this.atLeftBorder()) {
+    if (!this.fallen()
+        && !this.aboveTop()
+        && !this.atLeftBorder()
+        && !this.neighborsAt("left")
+    ) {
 
       let oldCoords = this.coords;
 
       oldCoords.forEach((coord) => {
         let [row, col] = coord;
-        this.board.grid[row][col] = undefined;
+        this.board.grid[row][col] = null;
       }, this);
 
       this.coords = [];
@@ -23,20 +27,46 @@ class Piece {
         this.board.grid[row][col] = this;
       }, this);
 
-      if (this.center) {
-        this.center = [this.center[0], this.center[1] - 1];
-      }
+      this.center = [this.center[0], this.center[1] - 1];
+    }
+  }
+
+  neighborsAt(direction) {
+
+    switch(direction) {
+      case "left":
+        for (let i = 0; i < this.coords.length; i++) {
+          let [row, col] = this.coords[i];
+          if (  this.board.grid[row][col - 1] &&
+                !this.coordsIncluded([row, col - 1])
+          ) {
+            return true;
+          }
+        }
+        return false;
+      case "right":
+        for (let i = 0; i < this.coords.length; i++) {
+          let [row, col] = this.coords[i];
+          if (this.board.grid[row][col + 1] && !this.coordsIncluded([row, col + 1])) {
+            return true;
+          }
+        }
+        return false;
     }
   }
 
   moveRight() {
-    if (!this.fallen() && !this.aboveTop() && !this.atRightBorder()) {
+    if (  !this.fallen()
+          && !this.aboveTop()
+          && !this.atRightBorder()
+          && !this.neighborsAt("right")
+    ) {
 
       let oldCoords = this.coords;
 
       oldCoords.forEach((coord) => {
         let [row, col] = coord;
-        this.board.grid[row][col] = undefined;
+        this.board.grid[row][col] = null;
       }, this);
 
       this.coords = [];
@@ -48,8 +78,12 @@ class Piece {
         this.board.grid[row][col] = this;
       }, this);
 
-      if (this.center) {
-        this.center = [this.center[0], this.center[1] + 1];
+      this.center = [this.center[0], this.center[1] + 1];
+
+      for (let i = 0; i < this.coords.length; i++) {
+        if (this.coords[i][0] < 0 || this.coords[i][0] > 9 || this.coords[i][1] < 0 || this.coords[i][1] > 19) {
+          // debugger
+        }
       }
     }
   }
@@ -82,6 +116,7 @@ class Piece {
       }
     }
 
+
     return false;
   }
 
@@ -95,9 +130,10 @@ class Piece {
     return false;
   }
 
-  spin(clockwise) {
+  rotatedCoords(clockwise) {
     const oldCoords = this.coords;
     const rotatedCoords = [];
+
 
     oldCoords.forEach((oldCoord) => {
       let [row, col] = oldCoord;
@@ -113,14 +149,26 @@ class Piece {
         [newRow, newCol] = [(col * -1) + this.center[0], row + this.center[1]];
       }
 
+
       rotatedCoords.push([newRow, newCol]);
     }, this);
 
+    return rotatedCoords;
+
+  }
+
+  spin(clockwise) {
+    console.log(this.coords);
+
+    const rotatedCoords = this.rotatedCoords();
+
+    console.log(rotatedCoords);
+
     if (this.validCoords(rotatedCoords)) {
 
-      oldCoords.forEach((coord) => {
+      this.coords.forEach((coord) => {
         let [row, col] = coord;
-        this.board.grid[row][col] = undefined;
+        this.board.grid[row][col] = null;
       }, this);
 
       this.coords = [];
@@ -129,6 +177,8 @@ class Piece {
         this.board.grid[coord[0]][coord[1]] = this;
         this.coords.push(coord);
       });
+
+
     }
 
   }
@@ -136,7 +186,7 @@ class Piece {
   validCoords(coords) {
     for (let i = 0; i < coords.length; i++) {
       let [row, col] = coords[i];
-      if (row < 0 || row > 19 || col < 0 || col > 9) {
+      if (row < 0 || row > 19 || col < 0 || col > 9 || (this.board.grid[row][col] && !this.coordsIncluded([row, col]))) {
         return false;
       }
     }
@@ -144,6 +194,7 @@ class Piece {
   }
 
   moveDown() {
+
     if (this.aboveTop()) {
       let oldCoords = this.coords;
 
@@ -160,7 +211,7 @@ class Piece {
 
       oldCoords.forEach((coord) => {
         let [row, col] = coord;
-        this.board.grid[row][col] = undefined;
+        this.board.grid[row][col] = null;
       }, this);
 
       this.coords = [];
@@ -170,11 +221,11 @@ class Piece {
         this.coords.push([row, col]);
         this.board.grid[row][col] = this;
       }, this);
+
+ 
     }
 
-    if (this.center) {
-      this.center = [this.center[0] + 1, this.center[1]];
-    }
+    this.center = [this.center[0] + 1, this.center[1]];
   }
 
   aboveTop() {
@@ -208,10 +259,10 @@ class TogglingPiece extends Piece {
   }
 
   spin() {
-     if (this.rotated) {
+     if (this.rotated && this.symbol !== "O") {
        Piece.prototype.spin.call(this, false);
        this.rotated = false;
-     } else {
+     } else if (this.symbol !== "O"){
        Piece.prototype.spin.call(this, true);
        this.rotated = true;
      }
@@ -252,7 +303,7 @@ Piece.PIECES =
     {
       symbol: "O",
       coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]],
-      center: null,
+      center: [-1, 4],
       spinnable: false
     },
     {
@@ -280,9 +331,7 @@ Piece.PIECES =
    const options = Piece.PIECES[randIndex];
    if (options.spinnable && options.center) {
      return new SpinnablePiece(options);
-   } else if (options.center) {
-     return new TogglingPiece(options);
    } else {
-     return new StaticPiece(options);
+     return new TogglingPiece(options);
    }
  };

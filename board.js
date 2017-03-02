@@ -25,7 +25,7 @@ class Board {
   }
 
   spin() {
-    if (this.fallingPiece) {
+    if (this.fallingPiece && !this.fallingPiece.aboveTop()) {
       this.fallingPiece.spin();
     }
   }
@@ -35,7 +35,6 @@ class Board {
   }
 
   draw() {
-
     const root = document.getElementById("root");
     const divToRemove = document.getElementById("board");
     if (divToRemove) {
@@ -81,13 +80,13 @@ class Board {
   }
 
   moveLeft() {
-    if (this.fallingPiece) {
+    if (this.fallingPiece && !this.fallingPiece.aboveTop()) {
       this.fallingPiece.moveLeft();
     }
   }
 
   moveRight() {
-    if (this.fallingPiece) {
+    if (this.fallingPiece && !this.fallingPiece.aboveTop()) {
       this.fallingPiece.moveRight();
     }
   }
@@ -113,9 +112,11 @@ class Board {
       this.spawnPiece();
     }
 
-
     const pieceWillAppearAtTop = this.fallingPiece.aboveTop();
-    this.fallingPiece.moveDown();
+
+    if (!this.fallingPiece.fallen()) {
+      this.fallingPiece.moveDown();
+    }
 
     if (pieceWillAppearAtTop) {
       this.updatePreview();
