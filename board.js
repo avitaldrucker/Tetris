@@ -20,6 +20,16 @@ class Board {
     return row;
   }
 
+  spin() {
+    if (this.fallingPiece) {
+      this.fallingPiece.spin();
+    }
+  }
+
+  arrayEqual(arr1, arr2) {
+    return arr1[0] === arr2[0] && arr1[1] === arr2[1];
+  }
+
   draw() {
 
     const root = document.getElementById("root");
@@ -53,7 +63,9 @@ class Board {
   }
 
   spawnPiece() {
-    return new Piece(this, Piece.randomPieceOptions());
+    const piece = Piece.randomPieceOptions();
+    piece.board = this;
+    return piece;
   }
 
   moveLeft() {
@@ -83,7 +95,6 @@ class Board {
   }
 
   clearRows() {
-    debugger
     const newGrid = [];
 
     for (let row = this.grid.length - 1; row >= 0; row--) {

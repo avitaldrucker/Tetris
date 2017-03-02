@@ -1,8 +1,7 @@
 class Piece {
-  constructor(board, options) {
+  constructor(options) {
     this.symbol = options["symbol"];
     this.coords = options["coords"];
-    this.board = board;
   }
 
   moveLeft() {
@@ -23,6 +22,10 @@ class Piece {
         this.coords.push([row, col]);
         this.board.grid[row][col] = this;
       }, this);
+
+      if (this.center) {
+        this.center = [this.center[0], this.center[1] - 1];
+      }
     }
   }
 
@@ -44,6 +47,10 @@ class Piece {
         this.coords.push([row, col]);
         this.board.grid[row][col] = this;
       }, this);
+
+      if (this.center) {
+        this.center = [this.center[0], this.center[1] + 1];
+      }
     }
   }
 
@@ -96,6 +103,10 @@ class Piece {
         this.board.grid[row][col] = this;
       }, this);
     }
+
+    if (this.center) {
+      this.center = [this.center[0] + 1, this.center[1]];
+    }
   }
 
   atTop() {
@@ -109,20 +120,104 @@ class Piece {
   }
 }
 
+class SpinnablePiece extends Piece {
+  constructor(options) {
+    super(options);
+    this.center = options.center;
+  }
+
+  spin() {
+    const oldCoords = this.coords;
+    const rotatedCoords = [];
+
+    oldCoords.forEach((oldCoord) => {
+      let [row, col] = oldCoord;
+      let posFromCenter = [row - this.center[0], col - this.center[1]];
+      [row, col] = posFromCenter;
+      let [newRow, newCol] = [col + this.center[0], (row * -1) + this.center[1]];
+      rotatedCoords.push([newRow, newCol]);
+    }, this);
+
+    if (this.validCoords(rotatedCoords)) {
+
+      oldCoords.forEach((coord) => {
+        let [row, col] = coord;
+        this.board.grid[row][col] = undefined;
+      }, this);
+
+      this.coords = [];
+
+      rotatedCoords.forEach((coord) => {
+        this.board.grid[coord[0]][coord[1]] = this;
+        this.coords.push(coord);
+      });
+    }
+
+  }
+
+  validCoords(coords) {
+    for (let i = 0; i < coords.length; i++) {
+      let [row, col] = coords;
+      if (row < 0 || row > 19 || col < 0 || col > 9) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+class TogglingPiece extends Piece {
+  constructor(options) {
+    super(options);
+  }
+}
+
 module.exports = Piece;
 
 Piece.PIECES =
   [
-    { symbol: "I", coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]] },
-    { symbol: "J", coords: [[-1, 4], [-1, 5], [-1, 6], [0, 6]] },
-    { symbol: "L", coords: [[-1, 4], [-1, 5], [0, 4], [-1, 6]] },
-    { symbol: "O", coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]] },
-    { symbol: "S", coords: [[0, 3], [-1, 4], [0, 4], [-1, 5]] },
-    { symbol: "T", coords: [[-1, 3], [-1, 4], [0, 4], [-1, 5]] },
-    { symbol: "Z", coords: [[-1, 3], [-1, 4], [0, 4], [0, 5]] }
+    {
+      symbol: "I",
+      coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]],
+      center: null
+    },
+    { symbol: "J",
+      coords: [[-1, 4], [-1, 5], [-1, 6], [0, 6]],
+      center: [-1, 5]
+    },
+    {
+      symbol: "L",
+      coords: [[-1, 4], [-1, 5], [0, 4], [-1, 6]],
+      center: [-1, 5]
+    },
+    {
+      symbol: "O",
+      coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]],
+      center: null
+    },
+    {
+      symbol: "S",
+      coords: [[0, 3], [-1, 4], [0, 4], [-1, 5]],
+      center: null
+    },
+    {
+      symbol: "T",
+      coords: [[-1, 4], [-1, 5], [0, 5], [-1, 6]],
+      center: [-1, 5]
+    },
+    {
+      symbol: "Z",
+      coords: [[-1, 4], [-1, 5], [0, 5], [0, 6]],
+      center: null
+    }
   ];
 
  Piece.randomPieceOptions = () => {
    const randIndex = Math.floor(Math.random() * Piece.PIECES.length);
-   return Piece.PIECES[randIndex];
+   const options = Piece.PIECES[randIndex];
+   if (options.center) {
+     return new SpinnablePiece(options);
+   } else {
+     return new TogglingPiece(options);
+   }
  };

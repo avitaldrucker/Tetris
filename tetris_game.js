@@ -22,6 +22,10 @@ class Game {
     this.board.moveRight();
   }
 
+  spin() {
+    this.board.spin();
+  }
+
   draw(ctx) {
     ctx.clearRect(0, 0, 1000, 1000);
     ctx.fillStyle = "#000000";

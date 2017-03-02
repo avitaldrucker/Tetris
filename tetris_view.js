@@ -14,6 +14,10 @@ class View {
           this.game.moveLeft();
           break;
 
+          case 38:
+          this.game.spin();
+          break;
+
           case 39:
           this.game.moveRight();
           break;
