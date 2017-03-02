@@ -20,21 +20,20 @@ class Game {
       sidebar.removeChild(scoreboardToRemove);
     }
 
-    const div = document.createElement("div");
-    div.id = "scoreboard";
+    const scoreboard = document.createElement("div");
+    scoreboard.id = "scoreboard";
 
     let levelHeader = document.createElement("H1");
     let levelText = document.createTextNode("Level: " + this.level());
     levelHeader.appendChild(levelText);
+    scoreboard.appendChild(levelHeader);
 
     let scoreHeader = document.createElement("H1");
     let scoreText = document.createTextNode("Score: " + this.score());
     scoreHeader.appendChild(scoreText);
+    scoreboard.appendChild(scoreHeader);
 
-    div.appendChild(levelHeader);
-    div.appendChild(scoreHeader);
-
-    sidebar.appendChild(div);
+    sidebar.appendChild(scoreboard);
   }
 
   update() {

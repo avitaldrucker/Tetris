@@ -5,7 +5,7 @@ class Piece {
   }
 
   moveLeft() {
-    if (!this.fallen() && !this.atTop() && !this.atLeftBorder()) {
+    if (!this.fallen() && !this.aboveTop() && !this.atLeftBorder()) {
 
       let oldCoords = this.coords;
 
@@ -30,7 +30,7 @@ class Piece {
   }
 
   moveRight() {
-    if (!this.fallen() && !this.atTop() && !this.atRightBorder()) {
+    if (!this.fallen() && !this.aboveTop() && !this.atRightBorder()) {
 
       let oldCoords = this.coords;
 
@@ -144,7 +144,7 @@ class Piece {
   }
 
   moveDown() {
-    if (this.atTop()) {
+    if (this.aboveTop()) {
       let oldCoords = this.coords;
 
       this.coords = [];
@@ -177,7 +177,7 @@ class Piece {
     }
   }
 
-  atTop() {
+  aboveTop() {
     for (let i = 0; i < this.coords.length; i++) {
       if (this.coords[i][0] === -1) {
         return true;
@@ -275,7 +275,7 @@ Piece.PIECES =
     }
   ];
 
- Piece.randomPieceOptions = () => {
+ Piece.randomPiece = () => {
    const randIndex = Math.floor(Math.random() * Piece.PIECES.length);
    const options = Piece.PIECES[randIndex];
    if (options.spinnable && options.center) {

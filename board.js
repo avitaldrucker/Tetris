@@ -11,6 +11,8 @@ class Board {
     }
     this.rowsCleared = 0;
     this.piecesFallen = 0;
+    this.nextPiece = null;
+    this.atTop = false;
   }
 
   emptyRow() {
@@ -65,9 +67,17 @@ class Board {
   }
 
   spawnPiece() {
-    const piece = Piece.randomPieceOptions();
-    piece.board = this;
-    return piece;
+    if (this.fallingPiece) {
+      this.fallingPiece = this.nextPiece;
+      this.nextPiece = Piece.randomPiece();
+      this.nextPiece.board = this;
+    }
+    else {
+      this.fallingPiece = Piece.randomPiece();
+      this.fallingPiece.board = this;
+      this.nextPiece = Piece.randomPiece();
+      this.nextPiece.board = this;
+    }
   }
 
   moveLeft() {
@@ -82,22 +92,45 @@ class Board {
     }
   }
 
-  update() {
-    if (!this.fallingPiece) {
-      this.fallingPiece = this.spawnPiece();
+  updatePreview() {
+    const sidebar = document.getElementById("sidebar");
+
+    let previewHeader = document.getElementById("preview-header");
+    if (previewHeader) {
+      sidebar.removeChild(previewHeader);
     }
 
+    previewHeader = document.createElement("H1");
+    previewHeader.id = "preview-header";
+    let previewText = document.createTextNode(this.nextPiece.symbol);
+    previewHeader.appendChild(previewText);
+
+    sidebar.appendChild(previewHeader);
+  }
+
+  update() {
+    if (!this.fallingPiece) {
+      this.spawnPiece();
+    }
+
+
+    const pieceWillAppearAtTop = this.fallingPiece.aboveTop();
     this.fallingPiece.moveDown();
 
-    if (this.fallingPiece.fallen()) {
+    if (pieceWillAppearAtTop) {
+      this.updatePreview();
+    }
+
+    if (this.fallingPiece.fallen() && !this.over()) {
       this.piecesFallen += 1;
       this.clearRows();
-      this.fallingPiece = this.spawnPiece();
+      this.spawnPiece();
     }
   }
 
+
   over() {
-    return this.fallingPiece && this.fallingPiece.atTop() && this.fallingPiece.fallen();
+    return this.fallingPiece && this.fallingPiece.aboveTop() && this.fallingPiece.fallen();
   }
 
   clearRows() {
