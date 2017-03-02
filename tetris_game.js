@@ -3,6 +3,7 @@ import Board from './board';
 class Game {
   constructor() {
     this.board = new Board();
+    window.board = this.board;
     this.level = 0;
   }
 
@@ -11,7 +12,17 @@ class Game {
   }
 
   update() {
-    this.board.update();
+    if (!this.over) {
+      this.board.update();
+    }
+  }
+
+  over() {
+    return this.board.over();
+  }
+
+  score() {
+    return (this.board.rowsCleared * 50) + (this.board.piecesFallen * 15);
   }
 
   moveLeft() {
@@ -24,16 +35,6 @@ class Game {
 
   spin() {
     this.board.spin();
-  }
-
-  draw(ctx) {
-    ctx.clearRect(0, 0, 1000, 1000);
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(0, 0, 1000, 1000);
-    ctx.fillStyle = "#ff0000";
-    ctx.fillRect(500, 0, 500, 500);
-    ctx.fillStyle = "#00ff00";
-    ctx.fillRect(500, 500, 500, 500);
   }
 }
 

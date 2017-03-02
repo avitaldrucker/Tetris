@@ -9,6 +9,8 @@ class Board {
     for (let i = 0; i < 20; i++) {
       this.grid[i] = this.emptyRow();
     }
+    this.rowsCleared = 0;
+    this.piecesFallen = 0;
   }
 
   emptyRow() {
@@ -89,9 +91,14 @@ class Board {
       this.fallingPiece.moveDown();
     }
     else {
+      this.piecesFallen += 1;
       this.clearRows();
       this.fallingPiece = this.spawnPiece();
     }
+  }
+
+  over() {
+    return this.fallingPiece && this.fallingPiece.atTop() && this.fallingPiece.fallen();
   }
 
   clearRows() {
@@ -104,6 +111,7 @@ class Board {
     }
 
     while (newGrid.length < 20) {
+      this.rowsCleared += 1;
       newGrid.unshift(this.emptyRow());
     }
 
