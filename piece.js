@@ -21,7 +21,7 @@ class Piece {
         let [row, col] = coord;
         col = col - 1;
         this.coords.push([row, col]);
-        this.board.grid[row][col] = "filled";
+        this.board.grid[row][col] = this;
       }, this);
     }
   }
@@ -42,7 +42,7 @@ class Piece {
         let [row, col] = coord;
         col = col + 1;
         this.coords.push([row, col]);
-        this.board.grid[row][col] = "filled";
+        this.board.grid[row][col] = this;
       }, this);
     }
   }
@@ -50,7 +50,7 @@ class Piece {
   fallen() {
     for (let i = 0; i < this.coords.length; i++) {
       let [row, col] = this.coords[i];
-      if (row === 19 || (this.board.grid[row + 1][col] === "filled" && !this.coordsIncluded([row + 1, col]))) {
+      if (row === 19 || (this.board.grid[row + 1][col] && !this.coordsIncluded([row + 1, col]))) {
         return true;
       }
     }
@@ -77,7 +77,7 @@ class Piece {
         let [row, col] = coord;
         row = row + 1;
         this.coords.push([row, col]);
-        this.board.grid[row][col] = "filled";
+        this.board.grid[row][col] = this;
       });
 
     } else {
@@ -86,15 +86,15 @@ class Piece {
       oldCoords.forEach((coord) => {
         let [row, col] = coord;
         this.board.grid[row][col] = undefined;
-      });
+      }, this);
 
       this.coords = [];
       oldCoords.forEach((coord) => {
         let [row, col] = coord;
         row = row + 1;
         this.coords.push([row, col]);
-        this.board.grid[row][col] = "filled";
-      });
+        this.board.grid[row][col] = this;
+      }, this);
     }
   }
 

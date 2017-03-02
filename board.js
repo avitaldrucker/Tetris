@@ -7,13 +7,18 @@ class Board {
     this.grid = [];
     this.fallingPiece = null;
     for (let i = 0; i < 20; i++) {
-      this.grid[i] = [];
-      for (let j = 0; j < 10; j++) {
-        this.grid[i][j] = null;
-      }
+      this.grid[i] = this.emptyRow();
     }
   }
 
+  emptyRow() {
+    const row = [];
+    for (let j = 0; j < 10; j++) {
+      row.push(null);
+    }
+
+    return row;
+  }
 
   draw() {
 
@@ -72,12 +77,35 @@ class Board {
       this.fallingPiece.moveDown();
     }
     else {
+      this.clearRows();
       this.fallingPiece = this.spawnPiece();
     }
   }
 
   clearRows() {
+    const newGrid = [];
 
+    for (let row = this.grid.length - 1; row >= 0; row--) {
+      if (!this.full(this.grid[row])) {
+        newGrid.unshift(this.grid[row]);
+      }
+    }
+
+    while (newGrid.length < 20) {
+      newGrid.unshift(this.emptyRow());
+    }
+
+    this.grid = newGrid;
+  }
+
+  full(arr) {
+    for (let i = 0; i < arr.length; i++) {
+      if (!arr[i]) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 

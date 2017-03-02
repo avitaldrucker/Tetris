@@ -27,7 +27,7 @@ class View {
     this.bindKeyHandlers();
     this.lastTime = 0;
     requestAnimationFrame(this.animate.bind(this));
-    setInterval(this.game.update.bind(this.game), 1000);
+    setInterval(this.game.update.bind(this.game), 500);
   }
 
   animate(time) {
