@@ -40,7 +40,7 @@ class Board {
         let tile = this.grid[row][col];
 
         if (tile) {
-          li.className = "L";
+          li.className = tile.symbol;
         }
 
         ul.appendChild(li);
@@ -83,6 +83,7 @@ class Board {
   }
 
   clearRows() {
+    debugger
     const newGrid = [];
 
     for (let row = this.grid.length - 1; row >= 0; row--) {

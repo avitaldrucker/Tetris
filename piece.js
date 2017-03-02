@@ -113,7 +113,7 @@ module.exports = Piece;
 
 Piece.PIECES =
   [
-    { symbol: "L", coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]] },
+    { symbol: "I", coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]] },
     { symbol: "J", coords: [[-1, 4], [-1, 5], [-1, 6], [0, 6]] },
     { symbol: "L", coords: [[-1, 4], [-1, 5], [0, 4], [-1, 6]] },
     { symbol: "O", coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]] },

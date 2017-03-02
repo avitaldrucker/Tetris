@@ -8,6 +8,30 @@ ul {
   display: flex;
 }
 
+li.I {
+  background: cyan;
+}
+
+li.J {
+  background: blue;
+}
+
 li.L {
+  background: orange;
+}
+
+li.O {
+  background: yellow;
+}
+
+li.S {
+  background: green;
+}
+
+li.T {
+  background: purple;
+}
+
+li.Z {
   background: red;
 }
