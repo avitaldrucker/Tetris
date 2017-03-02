@@ -1,48 +1,68 @@
 class Piece {
-  constructor(board, symbol, pos) {
+  constructor(board, symbol) {
     this.symbol = symbol;
-    this.pos = pos;
+    this.coords = [[0, 2], [0, 3], [0, 4], [0, 5]];
     this.board = board;
   }
 
   moveLeft() {
-    let [row, col] = this.pos;
 
-    if (col > 0) {
-      this.board.grid[row][col] = undefined;
+    if (this.coords[this.coords.length - 1][1] > 0) {
 
-      col = col - 1;
+      let oldCoords = this.coords;
 
-      this.pos = [row, col];
-      this.board.grid[row][col] = this;
+      oldCoords.forEach((coord) => {
+        let [row, col] = coord;
+        this.board.grid[row][col] = undefined;
+      });
+
+      this.coords = [];
+
+      oldCoords.forEach((coord) => {
+        let [row, col] = coord;
+        col = col - 1;
+        this.coords.push([row, col]);
+        this.board.grid[row][col] = "filled";
+      });
     }
   }
 
-  moveRight() {
-    let [row, col] = this.pos;
-    if (col < 9) {
-      this.board.grid[row][col] = undefined;
-      col = col + 1;
-      this.pos = [row, col];
-      this.board.grid[row][col] = this;
-    }
-  }
+  // moveRight() {
+  //   let [row, col] = this.pos;
+  //   if (col < 9) {
+  //     this.board.grid[row][col] = undefined;
+  //     col = col + 1;
+  //     this.pos = [row, col];
+  //     this.board.grid[row][col] = "filled";
+  //   }
+  // }
 
-  falling() {
-    let [row, col] = this.pos;
-    if (row >= 19) {
-      return false;
+  fallen() {
+    for (let i = 0; i < this.coords.length; i++) {
+      let [row, col] = this.coords[i];
+      if (row === 19 || this.board.grid[row + 1][col] === "filled") {
+        return true;
+      }
     }
-    const pieceBelow = this.board.grid[row + 1][col];
-    return !pieceBelow && this.pos[0] < 19;
+
+    return false;
   }
 
   moveDown() {
-    let [row, col] = this.pos;
-    this.board.grid[row][col] = undefined;
-    row = row + 1;
-    this.pos = [row, col];
-    this.board.grid[row][col] = this;
+    let oldCoords = this.coords;
+
+    oldCoords.forEach((coord) => {
+      let [row, col] = coord;
+      this.board.grid[row][col] = undefined;
+    });
+
+    this.coords = [];
+    oldCoords.forEach((coord) => {
+      let [row, col] = coord;
+      row = row + 1;
+      this.coords.push([row, col]);
+      this.board.grid[row][col] = "filled";
+    });
   }
 }
 
