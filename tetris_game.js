@@ -4,6 +4,7 @@ class Game {
   constructor() {
     this.board = new Board();
     window.board = this.board;
+    this.mostRecentLevel = this.level();
   }
 
   step(timeDelta) {
@@ -44,6 +45,13 @@ class Game {
 
   over() {
     return this.board.over();
+  }
+
+  newLevel() {
+    if (this.level() > this.mostRecentLevel) {
+      this.mostRecentLevel = this.level();
+      return true;
+    }
   }
 
   score() {

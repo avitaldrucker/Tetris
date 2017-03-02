@@ -3,6 +3,7 @@ class View {
     this.ctx = ctx;
     this.game = game;
     this.bindKeyHandlers = this.bindKeyHandlers.bind(this);
+    this.intervalTime = 600;
   }
 
   bindKeyHandlers() {
@@ -31,12 +32,18 @@ class View {
     this.bindKeyHandlers();
     this.lastTime = 0;
     requestAnimationFrame(this.animate.bind(this));
-    setInterval(this.game.update.bind(this.game), 500);
+    this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
   }
 
   animate(time) {
     const timeDelta = time - this.lastTime;
     this.game.step(timeDelta);
+
+    if (this.game.newLevel()) {
+      clearInterval(this.interval);
+      this.intervalTime -= 50;
+      this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
+    }
 
     requestAnimationFrame(this.animate.bind(this));
   }

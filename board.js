@@ -10,7 +10,7 @@ class Board {
       this.grid[i] = this.emptyRow();
     }
     this.rowsCleared = 0;
-    this.piecesFallen = -1;
+    this.piecesFallen = 0;
   }
 
   emptyRow() {
@@ -83,14 +83,13 @@ class Board {
   }
 
   update() {
-    if (this.fallingPiece && this.fallingPiece.fallen()) {
-      this.fallingPiece = null;
+    if (!this.fallingPiece) {
+      this.fallingPiece = this.spawnPiece();
     }
 
-    if (this.fallingPiece) {
-      this.fallingPiece.moveDown();
-    }
-    else {
+    this.fallingPiece.moveDown();
+
+    if (this.fallingPiece.fallen()) {
       this.piecesFallen += 1;
       this.clearRows();
       this.fallingPiece = this.spawnPiece();
