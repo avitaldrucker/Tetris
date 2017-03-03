@@ -76,9 +76,7 @@ class Game {
   }
 
   update() {
-    // if (!this.over()) {
-      this.board.update();
-    // }
+    this.board.update();
   }
 
   over() {

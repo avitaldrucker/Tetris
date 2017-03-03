@@ -4,8 +4,8 @@ class Board {
 
   constructor() {
     this.level = 0;
-    this.fallingPiece = null;
-    this.nextPiece = null;
+
+    this.spawnPiece();
 
     this.grid = this.newGrid();
     this.rowsCleared = 0;
@@ -16,18 +16,14 @@ class Board {
 
   newGrid() {
     const grid = [];
-    for (let i = 0; i < 20; i++) {
-      grid[i] = this.emptyRow();
-    }
+    for (let i = 0; i < 20; i++) { grid[i] = this.emptyRow(); }
 
     return grid;
   }
 
   emptyRow() {
     const row = [];
-    for (let j = 0; j < 10; j++) {
-      row.push(null);
-    }
+    for (let j = 0; j < 10; j++) { row.push(null); }
 
     return row;
   }
@@ -58,7 +54,7 @@ class Board {
     div.id = "board";
 
     for (let row = 0; row < this.grid.length; row++) {
-      div.appendChild(this.drawRow(rowNo));
+      div.appendChild(this.drawRow(row));
     }
 
     return div;
@@ -75,6 +71,7 @@ class Board {
 
       ul.appendChild(li);
     }
+
     return ul;
   }
 
@@ -111,40 +108,34 @@ class Board {
 
       sidebar.appendChild(this.createPreviewHeader());
     }
-
   }
 
-  this.createPreviewHeader() {
-    previewHeader = document.createElement("H1");
+  createPreviewHeader() {
+    const previewHeader = document.createElement("H1");
     previewHeader.id = "preview-header";
     let previewText = document.createTextNode(this.nextPiece.symbol);
     previewHeader.appendChild(previewText);
+
     return previewHeader;
   }
 
   drop() {
-    this.fallingPiece.drop();
+    if (this.fallingPiece.validCoords(this.fallingPiece.coords)) {
+      this.fallingPiece.drop();
+    }
   }
 
   update() {
-    if (!this.fallingPiece) { this.spawnPiece(); }
+    const topPiece = this.fallingPiece.aboveTop();
+    if (!this.fallingPiece.fallen()) { this.fallingPiece.moveDown(); }
 
-    const pieceWillAppearAtTop = this.fallingPiece.aboveTop();
-    if (!this.fallingPiece.fallen()) {
-      this.fallingPiece.moveDown();
-    }
-
-    if (pieceWillAppearAtTop) {
-      this.updatePreview();
-    }
+    if (topPiece) { this.updatePreview(); }
 
     if (this.fallingPiece.fallen() && !this.over()) {
       this.piecesFallen += 1;
       this.clearRows();
       this.spawnPiece();
     }
-
-    if (this.over()) { this.switchView = true; }
   }
 
   gridAt(pos) {
@@ -152,20 +143,14 @@ class Board {
    return this.grid[row][col];
   }
 
-
   over() {
-    // debugger
-    return this.fallingPiece && this.fallingPiece.aboveTop() && this.fallingPiece.fallen();
+    return this.fallingPiece
+      && this.fallingPiece.aboveTop()
+      && this.fallingPiece.fallen();
   }
 
   clearRows() {
-    const newGrid = [];
-
-    for (let row = this.grid.length - 1; row >= 0; row--) {
-      if (!this.full(this.grid[row])) {
-        newGrid.unshift(this.grid[row]);
-      }
-    }
+    const newGrid = this.nonFullRows();
 
     while (newGrid.length < 20) {
       this.rowsCleared += 1;
@@ -175,11 +160,19 @@ class Board {
     this.grid = newGrid;
   }
 
+  nonFullRows() {
+    const newGrid = [];
+
+    this.grid.forEach((row) => {
+      if (!this.full(row)) { newGrid.push(row); }
+    });
+
+    return newGrid;
+  }
+
   full(arr) {
     for (let i = 0; i < arr.length; i++) {
-      if (!arr[i]) {
-        return false;
-      }
+      if (!arr[i]) { return false; }
     }
 
     return true;
