@@ -13,6 +13,7 @@ class Board {
     this.piecesFallen = 0;
     this.nextPiece = null;
     this.atTop = false;
+    this.switchView = false;
   }
 
   emptyRow() {
@@ -36,6 +37,10 @@ class Board {
 
   draw() {
     const root = document.getElementById("root");
+
+    if (!root) {
+      return;
+    }
     const divToRemove = document.getElementById("board");
     if (divToRemove) {
       root.removeChild(divToRemove);
@@ -60,7 +65,6 @@ class Board {
       }
       div.appendChild(ul);
     }
-
 
     root.appendChild(div);
   }
@@ -92,19 +96,26 @@ class Board {
   }
 
   updatePreview() {
-    const sidebar = document.getElementById("sidebar");
+    if (!this.over()) {
+      const sidebar = document.getElementById("sidebar");
 
-    let previewHeader = document.getElementById("preview-header");
-    if (previewHeader) {
-      sidebar.removeChild(previewHeader);
+      let previewHeader = document.getElementById("preview-header");
+      if (previewHeader) {
+        sidebar.removeChild(previewHeader);
+      }
+
+      previewHeader = document.createElement("H1");
+      previewHeader.id = "preview-header";
+      let previewText = document.createTextNode(this.nextPiece.symbol);
+      previewHeader.appendChild(previewText);
+
+      sidebar.appendChild(previewHeader);
     }
 
-    previewHeader = document.createElement("H1");
-    previewHeader.id = "preview-header";
-    let previewText = document.createTextNode(this.nextPiece.symbol);
-    previewHeader.appendChild(previewText);
+  }
 
-    sidebar.appendChild(previewHeader);
+  drop() {
+    this.fallingPiece.drop();
   }
 
   update() {
@@ -113,7 +124,6 @@ class Board {
     }
 
     const pieceWillAppearAtTop = this.fallingPiece.aboveTop();
-
     if (!this.fallingPiece.fallen()) {
       this.fallingPiece.moveDown();
     }
@@ -127,6 +137,10 @@ class Board {
       this.clearRows();
       this.spawnPiece();
     }
+
+    if (this.over()) {
+      this.switchView = true;
+    }
   }
 
   gridAt(pos) {
@@ -136,6 +150,7 @@ class Board {
 
 
   over() {
+    // debugger
     return this.fallingPiece && this.fallingPiece.aboveTop() && this.fallingPiece.fallen();
   }
 

@@ -6,15 +6,20 @@ class Piece {
   }
 
   moveLeft() {
-    if (this.canMoveSideways("left")) {
+    if (this.canMoveSideways("l")) {
 
       let oldCoords = this.coords;
       this.clearBoard();
 
-      this.coords = [];
-      this.addModifiedCoords(col, -1);
+      this.addModifiedCoords("col", -1);
 
       this.center = [this.center[0], this.center[1] - 1];
+    }
+  }
+
+  drop() {
+    while (!this.fallen()) {
+      this.moveDown();
     }
   }
 
@@ -22,7 +27,7 @@ class Piece {
     return !this.fallen()
       && !this.aboveTop()
       && !this.atBorder(direction)
-      && !neighborsAt(direction);
+      && !this.neighborsAt(direction);
   }
 
   differentPieceAtPos(pos) {
@@ -33,21 +38,20 @@ class Piece {
     for (let i = 0; i < this.coords.length; i++) {
       let [row, col] = this.coords[i];
 
-      const neighborPos = dir === "left" ? [row, col - 1] : [row, col + 1];
+      let neighborPos = dir === "l" ? [row, col - 1] : [row, col + 1];
 
-      if ( differentPieceAtPos(neighborPos)) { return true; }
+      if (this.differentPieceAtPos(neighborPos)) { return true; }
     }
 
     return false;
   }
 
   moveRight() {
-    if (this.canMoveSideways("right")) {
+    if (this.canMoveSideways("r")) {
       let oldCoords = this.coords;
 
       this.clearBoard();
 
-      this.coords = [];
       this.addModifiedCoords("col", 1);
 
       this.center = [this.center[0], this.center[1] + 1];
@@ -55,7 +59,7 @@ class Piece {
   }
 
   atBorder(dir) {
-    const borderIndex = dir === "left" ? 0 : 9;
+    const borderIndex = dir === "l" ? 0 : 9;
 
     for (let i = 0; i < this.coords.length; i++) {
       let [row, col] = this.coords[i];
@@ -68,18 +72,21 @@ class Piece {
   fallen() {
     for (let i = 0; i < this.coords.length; i++) {
       let [row, col] = this.coords[i];
-      if (row === 19 || (this.board.grid[row + 1][col] && !this.coordsIncluded([row + 1, col]))) {
+
+      if (row === 19 || this.differentPieceAtPos([row + 1, col])) {
         return true;
       }
     }
-
 
     return false;
   }
 
   coordsIncluded(coord) {
+
     for (let i = 0; i < this.coords.length; i++) {
-      if (this.coords[i][0] === coord[0] && this.coords[i][1] === coord[1]) {
+      let [ownRow, ownCol] = this.coords[i];
+
+      if (ownRow === coord[0] && ownCol === coord[1]) {
         return true;
       }
     }
@@ -88,20 +95,20 @@ class Piece {
   }
 
   rotatedCoords(clockwise) {
-    const rotatedCoords = [];
+    const coords = [];
 
     this.coords.forEach((coord) => {
-      rotatedCoords.push(this.rotateCoord(coord, clockwise));
+      coords.push(this.rotateCoord(coord, clockwise));
     }, this);
 
-    return rotatedCoords;
+    return coords;
   }
 
   rotateCoord(coord, clockwise) {
     let [centerRow, centerCol] = this.center;
 
     let posFromCenter = [coord[0] - centerRow, coord[1] - centerCol];
-    [row, col] = posFromCenter;
+    let [row, col] = posFromCenter;
 
     if (clockwise) {
       return [col + centerRow, (row * -1) + centerCol];
@@ -111,13 +118,15 @@ class Piece {
   }
 
   spin(clockwise) {
-    if (this.validCoords(this.rotatedCoords())) {
+
+    const rotatedCoords = this.rotatedCoords(clockwise);
+    if (this.validCoords(rotatedCoords)) {
 
       this.clearBoard();
 
       this.coords = [];
 
-      this.rotatedCoords().forEach((coord) => {
+      rotatedCoords.forEach((coord) => {
         this.board.grid[coord[0]][coord[1]] = this;
         this.coords.push(coord);
       }, this);
@@ -135,19 +144,28 @@ class Piece {
   }
 
   validPos(pos) {
-    row < 0 || row > 19 || col < 0 || col > 9 || differentPieceAtPos(pos);
+    let [row, col] = pos;
+
+    return row < 0
+      || row > 19
+      || col < 0
+      || col > 9
+      || this.differentPieceAtPos(pos);
   }
 
   moveDown() {
     if (!this.aboveTop()) { this.clearBoard(); }
 
     let oldCoords = this.coords;
-    this.coords = [];
+
     this.addModifiedCoords("row", 1);
     this.center = [this.center[0] + 1, this.center[1]];
   }
 
   addModifiedCoords(line, num) {
+    const oldCoords = this.coords;
+    this.coords = [];
+
     oldCoords.forEach((coord) => {
       let [row, col] = coord;
       line === "row" ? (row = row + num) : (col = col + num);
