@@ -129,6 +129,11 @@ class Board {
     }
   }
 
+  gridAt(pos) {
+   let [row, col] = pos;
+   return this.grid[row][col];
+  }
+
 
   over() {
     return this.fallingPiece && this.fallingPiece.aboveTop() && this.fallingPiece.fallen();

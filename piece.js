@@ -1,110 +1,67 @@
 class Piece {
+
   constructor(options) {
     this.symbol = options["symbol"];
     this.coords = options["coords"];
   }
 
   moveLeft() {
-    if (!this.fallen()
-        && !this.aboveTop()
-        && !this.atLeftBorder()
-        && !this.neighborsAt("left")
-    ) {
+    if (this.canMoveSideways("left")) {
 
       let oldCoords = this.coords;
-
-      oldCoords.forEach((coord) => {
-        let [row, col] = coord;
-        this.board.grid[row][col] = null;
-      }, this);
+      this.clearBoard();
 
       this.coords = [];
-
-      oldCoords.forEach((coord) => {
-        let [row, col] = coord;
-        col = col - 1;
-        this.coords.push([row, col]);
-        this.board.grid[row][col] = this;
-      }, this);
+      this.addModifiedCoords(col, -1);
 
       this.center = [this.center[0], this.center[1] - 1];
     }
   }
 
-  neighborsAt(direction) {
-
-    switch(direction) {
-      case "left":
-        for (let i = 0; i < this.coords.length; i++) {
-          let [row, col] = this.coords[i];
-          if (  this.board.grid[row][col - 1] &&
-                !this.coordsIncluded([row, col - 1])
-          ) {
-            return true;
-          }
-        }
-        return false;
-      case "right":
-        for (let i = 0; i < this.coords.length; i++) {
-          let [row, col] = this.coords[i];
-          if (this.board.grid[row][col + 1] && !this.coordsIncluded([row, col + 1])) {
-            return true;
-          }
-        }
-        return false;
-    }
+  canMoveSideways(direction) {
+    return !this.fallen()
+      && !this.aboveTop()
+      && !this.atBorder(direction)
+      && !neighborsAt(direction);
   }
 
-  moveRight() {
-    if (  !this.fallen()
-          && !this.aboveTop()
-          && !this.atRightBorder()
-          && !this.neighborsAt("right")
-    ) {
-
-      let oldCoords = this.coords;
-
-      oldCoords.forEach((coord) => {
-        let [row, col] = coord;
-        this.board.grid[row][col] = null;
-      }, this);
-
-      this.coords = [];
-
-      oldCoords.forEach((coord) => {
-        let [row, col] = coord;
-        col = col + 1;
-        this.coords.push([row, col]);
-        this.board.grid[row][col] = this;
-      }, this);
-
-      this.center = [this.center[0], this.center[1] + 1];
-
-      for (let i = 0; i < this.coords.length; i++) {
-        if (this.coords[i][0] < 0 || this.coords[i][0] > 9 || this.coords[i][1] < 0 || this.coords[i][1] > 19) {
-          // debugger
-        }
-      }
-    }
+  differentPieceAtPos(pos) {
+    return this.board.gridAt(pos) && !this.coordsIncluded(pos);
   }
 
-  atRightBorder() {
+  neighborsAt(dir) {
     for (let i = 0; i < this.coords.length; i++) {
       let [row, col] = this.coords[i];
-      if (col === 9) {
-        return true;
-      }
+
+      const neighborPos = dir === "left" ? [row, col - 1] : [row, col + 1];
+
+      if ( differentPieceAtPos(neighborPos)) { return true; }
     }
+
     return false;
   }
 
-  atLeftBorder() {
+  moveRight() {
+    if (this.canMoveSideways("right")) {
+      let oldCoords = this.coords;
+
+      this.clearBoard();
+
+      this.coords = [];
+      this.addModifiedCoords("col", 1);
+
+      this.center = [this.center[0], this.center[1] + 1];
+    }
+  }
+
+  atBorder(dir) {
+    const borderIndex = dir === "left" ? 0 : 9;
+
     for (let i = 0; i < this.coords.length; i++) {
       let [row, col] = this.coords[i];
-      if (col === 0) {
-        return true;
-      }
+      if (col === borderIndex) { return true; }
     }
+
     return false;
   }
 
@@ -131,101 +88,80 @@ class Piece {
   }
 
   rotatedCoords(clockwise) {
-    const oldCoords = this.coords;
     const rotatedCoords = [];
 
-
-    oldCoords.forEach((oldCoord) => {
-      let [row, col] = oldCoord;
-      let posFromCenter = [row - this.center[0], col - this.center[1]];
-      [row, col] = posFromCenter;
-
-      let newRow;
-      let newCol;
-
-      if (clockwise) {
-        [newRow, newCol] = [col + this.center[0], (row * -1) + this.center[1]];
-      } else {
-        [newRow, newCol] = [(col * -1) + this.center[0], row + this.center[1]];
-      }
-
-
-      rotatedCoords.push([newRow, newCol]);
+    this.coords.forEach((coord) => {
+      rotatedCoords.push(this.rotateCoord(coord, clockwise));
     }, this);
 
     return rotatedCoords;
+  }
 
+  rotateCoord(coord, clockwise) {
+    let [centerRow, centerCol] = this.center;
+
+    let posFromCenter = [coord[0] - centerRow, coord[1] - centerCol];
+    [row, col] = posFromCenter;
+
+    if (clockwise) {
+      return [col + centerRow, (row * -1) + centerCol];
+    } else {
+      return [(col * -1) + centerRow, row + centerCol];
+    }
   }
 
   spin(clockwise) {
-    console.log(this.coords);
+    if (this.validCoords(this.rotatedCoords())) {
 
-    const rotatedCoords = this.rotatedCoords();
-
-    console.log(rotatedCoords);
-
-    if (this.validCoords(rotatedCoords)) {
-
-      this.coords.forEach((coord) => {
-        let [row, col] = coord;
-        this.board.grid[row][col] = null;
-      }, this);
+      this.clearBoard();
 
       this.coords = [];
 
-      rotatedCoords.forEach((coord) => {
+      this.rotatedCoords().forEach((coord) => {
         this.board.grid[coord[0]][coord[1]] = this;
         this.coords.push(coord);
-      });
-
+      }, this);
 
     }
-
   }
 
   validCoords(coords) {
     for (let i = 0; i < coords.length; i++) {
-      let [row, col] = coords[i];
-      if (row < 0 || row > 19 || col < 0 || col > 9 || (this.board.grid[row][col] && !this.coordsIncluded([row, col]))) {
+      if (this.validPos(coords[i])) {
         return false;
       }
     }
     return true;
   }
 
+  validPos(pos) {
+    row < 0 || row > 19 || col < 0 || col > 9 || differentPieceAtPos(pos);
+  }
+
   moveDown() {
+    if (!this.aboveTop()) { this.clearBoard(); }
 
-    if (this.aboveTop()) {
-      let oldCoords = this.coords;
-
-      this.coords = [];
-      oldCoords.forEach((coord) => {
-        let [row, col] = coord;
-        row = row + 1;
-        this.coords.push([row, col]);
-        this.board.grid[row][col] = this;
-      });
-
-    } else {
-      let oldCoords = this.coords;
-
-      oldCoords.forEach((coord) => {
-        let [row, col] = coord;
-        this.board.grid[row][col] = null;
-      }, this);
-
-      this.coords = [];
-      oldCoords.forEach((coord) => {
-        let [row, col] = coord;
-        row = row + 1;
-        this.coords.push([row, col]);
-        this.board.grid[row][col] = this;
-      }, this);
-
- 
-    }
-
+    let oldCoords = this.coords;
+    this.coords = [];
+    this.addModifiedCoords("row", 1);
     this.center = [this.center[0] + 1, this.center[1]];
+  }
+
+  addModifiedCoords(line, num) {
+    oldCoords.forEach((coord) => {
+      let [row, col] = coord;
+      line === "row" ? (row = row + num) : (col = col + num);
+
+      this.coords.push([row, col]);
+      this.board.grid[row][col] = this;
+    }, this);
+  }
+
+  clearBoard() {
+    this.coords.forEach((coord) => {
+      let [row, col] = coord;
+      this.board.grid[row][col] = null;
+    }, this);
   }
 
   aboveTop() {
@@ -281,50 +217,56 @@ class StaticPiece extends Piece {
 
 module.exports = Piece;
 
-Piece.PIECES =
-  [
-    {
-      symbol: "I",
-      coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]],
-      center: [-1, 4],
-      spinnable: false
-    },
-    { symbol: "J",
-      coords: [[-1, 4], [-1, 5], [-1, 6], [0, 6]],
-      center: [-1, 5],
-      spinnable: true
-    },
-    {
-      symbol: "L",
-      coords: [[-1, 4], [-1, 5], [0, 4], [-1, 6]],
-      center: [-1, 5],
-      spinnable: true
-    },
-    {
-      symbol: "O",
-      coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]],
-      center: [-1, 4],
-      spinnable: false
-    },
-    {
-      symbol: "S",
-      coords: [[0, 3], [-1, 4], [0, 4], [-1, 5]],
-      center: [-1, 4],
-      spinnable: false
-    },
-    {
-      symbol: "T",
-      coords: [[-1, 4], [-1, 5], [0, 5], [-1, 6]],
-      center: [-1, 5],
-      spinnable: true
-    },
-    {
-      symbol: "Z",
-      coords: [[-1, 4], [-1, 5], [0, 5], [0, 6]],
-      center: [-1, 5],
-      spinnable: false
-    }
-  ];
+const iPiece = {
+  symbol: "I",
+  coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]],
+  center: [-1, 4],
+  spinnable: false
+};
+
+const jPiece = { symbol: "J",
+  coords: [[-1, 4], [-1, 5], [-1, 6], [0, 6]],
+  center: [-1, 5],
+  spinnable: true
+};
+
+const lPiece = {
+  symbol: "L",
+  coords: [[-1, 4], [-1, 5], [0, 4], [-1, 6]],
+  center: [-1, 5],
+  spinnable: true
+}
+
+const oPiece = {
+  symbol: "O",
+  coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]],
+  center: [-1, 4],
+  spinnable: false
+};
+
+const sPiece = {
+  symbol: "S",
+  coords: [[0, 3], [-1, 4], [0, 4], [-1, 5]],
+  center: [-1, 4],
+  spinnable: false
+};
+
+const tPiece = {
+  symbol: "T",
+  coords: [[-1, 4], [-1, 5], [0, 5], [-1, 6]],
+  center: [-1, 5],
+  spinnable: true
+};
+
+const zPiece = {
+  symbol: "Z",
+  coords: [[-1, 4], [-1, 5], [0, 5], [0, 6]],
+  center: [-1, 5],
+  spinnable: false
+};
+
+Piece.PIECES = [iPiece, jPiece, lPiece, oPiece, sPiece, tPiece, zPiece];
+
 
  Piece.randomPiece = () => {
    const randIndex = Math.floor(Math.random() * Piece.PIECES.length);
