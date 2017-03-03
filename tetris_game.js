@@ -1,6 +1,7 @@
 import Board from './board';
 
 class Game {
+
   constructor() {
     this.board = new Board();
     window.board = this.board;
@@ -12,9 +13,7 @@ class Game {
   step(timeDelta) {
     this.draw();
     this.board.draw();
-    if (this.board.over()) {
-      this.switchView = true;
-    }
+    if (this.board.over()) { this.switchView = true; }
   }
 
   draw() {
@@ -28,7 +27,6 @@ class Game {
 
       sidebar.appendChild(this.createScoreboard());
     }
-
 
   }
 
@@ -45,11 +43,6 @@ class Game {
 
     const root = document.getElementById("root");
     root.appendChild(div);
-
-    // document.getElementById("play-again").addEventListener("click", function() {
-    //   const game = new Game();
-    //   new View(game, ctx).start();
-    // });
   }
 
   createScoreboard() {

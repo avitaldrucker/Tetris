@@ -35,3 +35,16 @@ li.T {
 li.Z {
   background: red;
 }
+
+.visible {
+  display: block;
+}
+
+.invisible {
+  display: none;
+}
+
+button {
+  height: 50px;
+  width: 50px;
+}

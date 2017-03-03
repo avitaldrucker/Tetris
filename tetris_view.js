@@ -6,6 +6,7 @@ class View {
     this.bindKeyHandlers = this.bindKeyHandlers.bind(this);
     this.intervalTime = 600;
     this.downKeyPressed = false;
+    this.switchedView = false;
   }
 
   bindKeyHandlers() {
@@ -52,8 +53,12 @@ class View {
 
   start() {
     this.bindKeyHandlers(); //remove key handlers when game over
-    this.lastTime = 0;
+
     requestAnimationFrame(this.animate.bind(this));
+
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
     this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
   }
 
@@ -66,8 +71,9 @@ class View {
       this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
     }
 
-    if (this.game.switchView) {
+    if (this.game.switchView && !this.switchedView) {
       setTimeout(this.drawRestartGame.bind(this), 1000);
+      this.switchedView = true;
     }
 
 
@@ -75,10 +81,11 @@ class View {
   }
 
   drawRestartGame() {
+
     const main = document.getElementById("main");
     const body = document.getElementById("body");
     if (main) {
-      body.removeChild(main);
+      main.className = "invisible";
     }
 
     let gameOverSection = document.getElementById("game-over");
@@ -101,6 +108,9 @@ class View {
       body.appendChild(gameOverSection);
 
       document.getElementById("button").addEventListener("click", (e) => {
+        let main = document.getElementById("main");
+        main.className = "visible";
+        this.switchedView = false;
         this.game = new Game();
         this.start();
       });
