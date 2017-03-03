@@ -1,19 +1,26 @@
 import Piece from './piece';
 
 class Board {
+
   constructor() {
     this.level = 0;
-    this.descentSpeed = 0;
-    this.grid = [];
     this.fallingPiece = null;
-    for (let i = 0; i < 20; i++) {
-      this.grid[i] = this.emptyRow();
-    }
+    this.nextPiece = null;
+
+    this.grid = this.newGrid();
     this.rowsCleared = 0;
     this.piecesFallen = 0;
-    this.nextPiece = null;
-    this.atTop = false;
+
     this.switchView = false;
+  }
+
+  newGrid() {
+    const grid = [];
+    for (let i = 0; i < 20; i++) {
+      grid[i] = this.emptyRow();
+    }
+
+    return grid;
   }
 
   emptyRow() {
@@ -38,49 +45,49 @@ class Board {
   draw() {
     const root = document.getElementById("root");
 
-    if (!root) {
-      return;
-    }
-    const divToRemove = document.getElementById("board");
-    if (divToRemove) {
-      root.removeChild(divToRemove);
-    }
+    if (!root) { return; }
 
+    const divToRemove = document.getElementById("board");
+    if (divToRemove) { root.removeChild(divToRemove); }
+
+    root.appendChild(this.drawGrid());
+  }
+
+  drawGrid() {
     const div = document.createElement("div");
     div.id = "board";
 
-    let ul;
-
     for (let row = 0; row < this.grid.length; row++) {
-      ul = document.createElement("ul");
-      for (let col = 0; col < this.grid[0].length; col++) {
-        let li = document.createElement("li");
-        let tile = this.grid[row][col];
-
-        if (tile) {
-          li.className = tile.symbol;
-        }
-
-        ul.appendChild(li);
-      }
-      div.appendChild(ul);
+      div.appendChild(this.drawRow(rowNo));
     }
 
-    root.appendChild(div);
+    return div;
+  }
+
+  drawRow(rowIdx) {
+    const ul = document.createElement("ul");
+
+    for (let col = 0; col < this.grid[0].length; col++) {
+      let li = document.createElement("li");
+      let tile = this.grid[rowIdx][col];
+
+      if (tile) { li.className = tile.symbol; }
+
+      ul.appendChild(li);
+    }
+    return ul;
   }
 
   spawnPiece() {
     if (this.fallingPiece) {
       this.fallingPiece = this.nextPiece;
-      this.nextPiece = Piece.randomPiece();
-      this.nextPiece.board = this;
-    }
-    else {
+    } else {
       this.fallingPiece = Piece.randomPiece();
       this.fallingPiece.board = this;
-      this.nextPiece = Piece.randomPiece();
-      this.nextPiece.board = this;
     }
+
+    this.nextPiece = Piece.randomPiece();
+    this.nextPiece.board = this;
   }
 
   moveLeft() {
@@ -100,18 +107,19 @@ class Board {
       const sidebar = document.getElementById("sidebar");
 
       let previewHeader = document.getElementById("preview-header");
-      if (previewHeader) {
-        sidebar.removeChild(previewHeader);
-      }
+      if (previewHeader) { sidebar.removeChild(previewHeader); }
 
-      previewHeader = document.createElement("H1");
-      previewHeader.id = "preview-header";
-      let previewText = document.createTextNode(this.nextPiece.symbol);
-      previewHeader.appendChild(previewText);
-
-      sidebar.appendChild(previewHeader);
+      sidebar.appendChild(this.createPreviewHeader());
     }
 
+  }
+
+  this.createPreviewHeader() {
+    previewHeader = document.createElement("H1");
+    previewHeader.id = "preview-header";
+    let previewText = document.createTextNode(this.nextPiece.symbol);
+    previewHeader.appendChild(previewText);
+    return previewHeader;
   }
 
   drop() {
@@ -119,9 +127,7 @@ class Board {
   }
 
   update() {
-    if (!this.fallingPiece) {
-      this.spawnPiece();
-    }
+    if (!this.fallingPiece) { this.spawnPiece(); }
 
     const pieceWillAppearAtTop = this.fallingPiece.aboveTop();
     if (!this.fallingPiece.fallen()) {
@@ -138,9 +144,7 @@ class Board {
       this.spawnPiece();
     }
 
-    if (this.over()) {
-      this.switchView = true;
-    }
+    if (this.over()) { this.switchView = true; }
   }
 
   gridAt(pos) {

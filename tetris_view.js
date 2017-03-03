@@ -1,3 +1,5 @@
+import Game from './tetris_game';
+
 class View {
   constructor(game) {
     this.game = game;
@@ -49,17 +51,14 @@ class View {
   }
 
   start() {
-    this.bindKeyHandlers();
+    this.bindKeyHandlers(); //remove key handlers when game over
     this.lastTime = 0;
     requestAnimationFrame(this.animate.bind(this));
     this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
   }
 
   animate(time) {
-    const timeDelta = time - this.lastTime;
-    // if (!this.game.over()) {
-      this.game.step(timeDelta);
-    // }
+    this.game.step();
 
     if (this.game.newLevel()) {
       clearInterval(this.interval);
@@ -93,13 +92,18 @@ class View {
       gameOverHeader.appendChild(gameOverHeaderText);
 
       const button = document.createElement("button");
-      button.setAttribute("value", "Play again")
-      // const button.value = "Play again";
+      button.setAttribute("value", "Play again");
+      button.id = "button";
 
       gameOverSection.appendChild(gameOverHeader);
       gameOverSection.appendChild(button);
 
       body.appendChild(gameOverSection);
+
+      document.getElementById("button").addEventListener("click", (e) => {
+        this.game = new Game();
+        this.start();
+      });
     }
 
 
