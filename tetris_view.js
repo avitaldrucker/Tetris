@@ -72,7 +72,7 @@ class View {
 
     if (this.game.newLevel()) {
       clearInterval(this.interval);
-      this.intervalTime -= 50;
+      this.intervalTime -= 40;
       this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
     }
 
@@ -107,7 +107,6 @@ class View {
       gameOverHeader.appendChild(gameOverHeaderText);
 
       const button = document.createElement("button");
-      // button.setAttribute("value", "Play again");
       button.textContent = "Play again";
       button.id = "button";
 

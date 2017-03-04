@@ -113,6 +113,11 @@ class Board {
     if (this.fallingPiece.validCoords(this.fallingPiece.coords)) {
       this.fallingPiece.drop();
     }
+    if (!this.over()) {
+      this.piecesFallen += 1;
+      this.clearRows();
+      this.spawnPiece();
+    }
   }
 
   update() {

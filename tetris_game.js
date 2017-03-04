@@ -83,10 +83,6 @@ class Game {
     return button;
   }
 
-
-
-
-
   update() {
     this.board.update();
   }
