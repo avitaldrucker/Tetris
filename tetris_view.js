@@ -1,12 +1,14 @@
 import Game from './tetris_game';
 
 class View {
-  constructor(game) {
+  constructor(game, ctx) {
     this.game = game;
     this.bindKeyHandlers = this.bindKeyHandlers.bind(this);
     this.intervalTime = 600;
     this.downKeyPressed = false;
     this.switchedView = false;
+    this.keysBound = false;
+    this.ctx = ctx;
   }
 
   bindKeyHandlers() {
@@ -52,7 +54,10 @@ class View {
   }
 
   start() {
-    this.bindKeyHandlers(); //remove key handlers when game over
+    if (!this.keysBound) {
+      this.bindKeyHandlers();
+      this.keysBound = true;
+    }
 
     requestAnimationFrame(this.animate.bind(this));
 
@@ -89,17 +94,20 @@ class View {
     }
 
     let gameOverSection = document.getElementById("game-over");
+    if (gameOverSection) { gameOverSection.className = "visible"; }
 
     if (!gameOverSection) {
       gameOverSection = document.createElement("section");
       gameOverSection.id = "game-over";
+      if (gameOverSection) { gameOverSection.className = "visible"; }
 
       const gameOverHeader = document.createElement("H1");
       const gameOverHeaderText = document.createTextNode("Game over!")
       gameOverHeader.appendChild(gameOverHeaderText);
 
       const button = document.createElement("button");
-      button.setAttribute("value", "Play again");
+      // button.setAttribute("value", "Play again");
+      button.textContent = "Play again";
       button.id = "button";
 
       gameOverSection.appendChild(gameOverHeader);
@@ -110,6 +118,7 @@ class View {
       document.getElementById("button").addEventListener("click", (e) => {
         let main = document.getElementById("main");
         main.className = "visible";
+        gameOverSection.className = "invisible";
         this.switchedView = false;
         this.game = new Game();
         this.start();

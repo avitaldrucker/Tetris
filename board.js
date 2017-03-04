@@ -2,7 +2,7 @@ import Piece from './piece';
 
 class Board {
 
-  constructor() {
+  constructor(ctx) {
     this.level = 0;
 
     this.spawnPiece();
@@ -12,6 +12,7 @@ class Board {
     this.piecesFallen = 0;
 
     this.switchView = false;
+    this.ctx = ctx;
   }
 
   newGrid() {
@@ -62,12 +63,17 @@ class Board {
 
   drawRow(rowIdx) {
     const ul = document.createElement("ul");
+    ul.className = "board";
 
     for (let col = 0; col < this.grid[0].length; col++) {
       let li = document.createElement("li");
       let tile = this.grid[rowIdx][col];
 
-      if (tile) { li.className = tile.symbol; }
+      if (tile) {
+        li.className = tile.symbol + " tile";
+      } else {
+        li.className = "tile";
+      }
 
       ul.appendChild(li);
     }
@@ -100,23 +106,7 @@ class Board {
   }
 
   updatePreview() {
-    if (!this.over()) {
-      const sidebar = document.getElementById("sidebar");
-
-      let previewHeader = document.getElementById("preview-header");
-      if (previewHeader) { sidebar.removeChild(previewHeader); }
-
-      sidebar.appendChild(this.createPreviewHeader());
-    }
-  }
-
-  createPreviewHeader() {
-    const previewHeader = document.createElement("H1");
-    previewHeader.id = "preview-header";
-    let previewText = document.createTextNode(this.nextPiece.symbol);
-    previewHeader.appendChild(previewText);
-
-    return previewHeader;
+    if (!this.over()) { this.nextPiece.draw(this.ctx); }
   }
 
   drop() {

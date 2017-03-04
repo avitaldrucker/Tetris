@@ -3,6 +3,7 @@ class Piece {
   constructor(options) {
     this.symbol = options["symbol"];
     this.coords = options["coords"];
+    this.draw = options.draw;
   }
 
   moveLeft() {
@@ -191,6 +192,8 @@ class Piece {
 
     return false;
   }
+
+
 }
 
 class SpinnablePiece extends Piece {
@@ -239,48 +242,111 @@ const iPiece = {
   symbol: "I",
   coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]],
   center: [-1, 4],
-  spinnable: false
+  spinnable: false,
+  draw: (ctx) => {
+    prepareDraw(ctx);
+    ctx.fillStyle = "cyan";
+
+    addSquare(ctx, 0, 0);
+    addSquare(ctx, 50, 0);
+    addSquare(ctx, 100, 0);
+    addSquare(ctx, 150, 0);
+  }
 };
 
 const jPiece = { symbol: "J",
   coords: [[-1, 4], [-1, 5], [-1, 6], [0, 6]],
   center: [-1, 5],
-  spinnable: true
+  spinnable: true,
+  draw: (ctx) => {
+    prepareDraw(ctx);
+    ctx.fillStyle = "blue";
+
+    addSquare(ctx, 25, 0);
+    addSquare(ctx, 75, 0);
+    addSquare(ctx, 125, 0);
+    addSquare(ctx, 125, 50);
+  }
 };
 
 const lPiece = {
   symbol: "L",
   coords: [[-1, 4], [-1, 5], [0, 4], [-1, 6]],
   center: [-1, 5],
-  spinnable: true
+  spinnable: true,
+  draw: (ctx) => {
+    prepareDraw(ctx);
+    ctx.fillStyle = "orange";
+
+    addSquare(ctx, 25, 0);
+    addSquare(ctx, 25, 50);
+    addSquare(ctx, 75, 0);
+    addSquare(ctx, 125, 0);
+  }
 }
 
 const oPiece = {
   symbol: "O",
   coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]],
   center: [-1, 4],
-  spinnable: false
+  spinnable: false,
+  draw: (ctx) => {
+    prepareDraw(ctx);
+    ctx.fillStyle = "yellow";
+
+    addSquare(ctx, 50, 0);
+    addSquare(ctx, 50, 50);
+    addSquare(ctx, 100, 0);
+    addSquare(ctx, 100, 50);
+  }
 };
 
 const sPiece = {
   symbol: "S",
   coords: [[0, 3], [-1, 4], [0, 4], [-1, 5]],
   center: [-1, 4],
-  spinnable: false
+  spinnable: false,
+  draw: (ctx) => {
+    prepareDraw(ctx);
+    ctx.fillStyle = "green";
+
+    addSquare(ctx, 25, 50);
+    addSquare(ctx, 75, 50);
+    addSquare(ctx, 75, 0);
+    addSquare(ctx, 125, 0);
+  }
 };
 
 const tPiece = {
   symbol: "T",
   coords: [[-1, 4], [-1, 5], [0, 5], [-1, 6]],
   center: [-1, 5],
-  spinnable: true
+  spinnable: true,
+  draw: (ctx) => {
+    prepareDraw(ctx);
+    ctx.fillStyle = "purple";
+
+    addSquare(ctx, 25, 0);
+    addSquare(ctx, 75, 0);
+    addSquare(ctx, 125, 0);
+    addSquare(ctx, 75, 50);
+  }
 };
 
 const zPiece = {
   symbol: "Z",
   coords: [[-1, 4], [-1, 5], [0, 5], [0, 6]],
   center: [-1, 5],
-  spinnable: false
+  spinnable: false,
+  draw: (ctx) => {
+    prepareDraw(ctx);
+    ctx.fillStyle = "red";
+
+    addSquare(ctx, 25, 0);
+    addSquare(ctx, 75, 0);
+    addSquare(ctx, 75, 50);
+    addSquare(ctx, 125, 50);
+  }
 };
 
 Piece.PIECES = [iPiece, jPiece, lPiece, oPiece, sPiece, tPiece, zPiece];
@@ -295,3 +361,14 @@ Piece.PIECES = [iPiece, jPiece, lPiece, oPiece, sPiece, tPiece, zPiece];
      return new TogglingPiece(options);
    }
  };
+
+ const prepareDraw = (ctx) => {
+   ctx.clearRect(0, 0, 300, 300);
+   ctx.strokeStyle = "black";
+   ctx.lineWidth = 3;
+ }
+
+ const addSquare = (ctx, x, y) => {
+   ctx.fillRect(x, y, 50, 50);
+   ctx.strokeRect(x, y, 50, 50);
+ }

@@ -5,25 +5,51 @@
     <title>Tetris</title>
     <link rel="stylesheet" type="text/css" href="./css/reset.css">
     <link rel="stylesheet" type="text/css" href="./css/tetris.css">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:700" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript" src="bundle.js"></script>
   </head>
   <body id="body">
+    <div class="page-container">
+    <h1 class="tetris-header">Tetris</h1>
     <main id="main">
-      <h1>Tetris<h1>
-      <div>
-        <h1>Commands</h1>
-        <ul>
-          <li>rotate right: ▲</li>
-          <li>slide left: ◀</li>
-          <li>slide right: ▶</li>
-          <li>slide down: ▼</li>
-          <li>drop: space bar</li>
-        </ul>
-      </div>
+
       <div id="root"></div>
-      <div id="sidebar"></div>
+
+      <div id="sidebar">
+        <div class="canvas-container">
+          <canvas id="canvas"></canvas>
+        </div>
+        <table>
+          <tr>
+            <th class="action">Action</th>
+            <th class="command-key">Key</th>
+          </tr>
+          <tr>
+            <td class="action">rotate</td>
+            <td class="command-key">▲</td>
+          </tr>
+          <tr>
+            <td class="action">slide left</td>
+            <td class="command-key">◀</td>
+          </tr>
+          <tr>
+            <td class="action">slide right</td>
+            <td class="command-key">▶</td>
+          </tr>
+          <tr>
+            <td class="action">slide down</td>
+            <td class="command-key">▼</td>
+          </tr>
+          <tr>
+            <td class="action">drop</td>
+            <td class="command-key">space</td>
+          </tr>
+        </table>
+      </div>
+
     </main>
+    </div>
   </body>
   <script></script>
 </html>

@@ -1,43 +1,61 @@
-li {
-  border: 1px solid blue;
+li.tile {
+  border: 1px solid black;
   width: 50px;
   height: 50px;
 }
 
-ul {
+ul.board {
   display: flex;
 }
 
+ul.command li {
+  display: block;
+}
+
 li.I {
+  border: 1px solid black;
   background: cyan;
 }
 
 li.J {
+  border: 1px solid black;
   background: blue;
 }
 
 li.L {
+  border: 1px solid black;
   background: orange;
 }
 
+
+
 li.O {
+  border: 1px solid black;
   background: yellow;
 }
 
 li.S {
+  border: 1px solid black;
   background: green;
 }
 
 li.T {
+  border: 1px solid black;
   background: purple;
 }
 
 li.Z {
+  border: 1px solid black;
   background: red;
 }
 
 .visible {
   display: block;
+}
+
+main.visible {
+  display: flex;
+  justify-content: center;
 }
 
 .invisible {
@@ -47,4 +65,78 @@ li.Z {
 button {
   height: 50px;
   width: 50px;
+}
+
+main {
+  background-image:
+  justify-content: center;
+  margin: 0 auto;
+  width: 80%;
+  display: flex;
+}
+
+h1 {
+  text-align: center;
+}
+
+div.commands {
+  width: 20%;
+  border: 1px solid black;
+  vertical-align: center;
+  padding: 400px 0px 400px 20px;
+}
+
+
+div#root {
+  padding-right: 5%;
+}
+
+div#board {
+  background: black;
+}
+
+
+#sidebar {
+  width: 15%;
+  border: 1px solid black;
+  padding: 40px 20px;
+}
+
+h1.score-header {
+  display: block;
+  width: 50px;
+}
+
+.action {
+  padding-right: 50px;
+}
+
+th {
+  font-weight: bold;
+  text-align: left;
+}
+
+div.canvas-container {
+  border: 1px solid black;
+  margin-bottom: 400px;
+  /*padding: 90px 100px 70px 100px;;*/
+}
+
+canvas {
+  border: 1px solid red;
+  margin: 25px 60px;
+}
+
+h1.tetris-header {
+  font-size: 100px;
+  font-family: 'Rubik', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+}
+
+div.page-container {
+  background-image: url("https://newevolutiondesigns.com/images/freebies/abstract-background-25.jpg");
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
 }

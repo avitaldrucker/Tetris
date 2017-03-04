@@ -2,12 +2,13 @@ import Board from './board';
 
 class Game {
 
-  constructor() {
-    this.board = new Board();
+  constructor(ctx) {
+    this.board = new Board(ctx);
     window.board = this.board;
     this.mostRecentLevel = this.level();
     this.gameOverButtonCreated = false;
     this.switchView = false;
+    this.ctx = ctx;
   }
 
   step(timeDelta) {
@@ -17,13 +18,14 @@ class Game {
   }
 
   draw() {
-
     if (!this.over()) {
       let sidebar = document.getElementById("sidebar");
 
       const scoreboardToRemove = document.getElementById("scoreboard");
 
-      if (scoreboardToRemove) { sidebar.removeChild(scoreboardToRemove); }
+      if (scoreboardToRemove) {
+        sidebar.removeChild(scoreboardToRemove);
+      }
 
       sidebar.appendChild(this.createScoreboard());
     }
@@ -34,15 +36,27 @@ class Game {
     const div = document.createElement("div");
     div.id = "game-over";
 
-    let header = document.createElement("H1");
-    let levelText = document.createTextNode("Game over!");
-
-    let button = document.createElement("button");
-    button.id = "play-again";
-    button.value = "Click to play again";
+    div.appendChild(this.createGameOverNotification());
+    div.appendChild(this.createPlayButton());
 
     const root = document.getElementById("root");
     root.appendChild(div);
+  }
+
+  createGameOverNotification() {
+    let header = document.createElement("H1");
+    let levelText = document.createTextNode("Game over!");
+    header.appendChild(levelText);
+
+    return header;
+  }
+
+  createPlayButton() {
+    let button = document.createElement("button");
+    button.id = "play-again";
+    button.innerHTML = "Click to play again";
+
+    return button;
   }
 
   createScoreboard() {
@@ -63,6 +77,7 @@ class Game {
 
   createScoreHeader() {
     let scoreHeader = document.createElement("H1");
+    scoreHeader.id = "score-header";
     let scoreText = document.createTextNode("Score: " + this.score());
     scoreHeader.appendChild(scoreText);
     return scoreHeader;
@@ -84,7 +99,10 @@ class Game {
   }
 
   score() {
-    return (this.board.rowsCleared * 50) + (this.board.piecesFallen * 15);
+    const clearPoints = this.board.rowsCleared * 50;
+    const fallenPiecesPoints = this.board.piecesFallen * 15;
+
+    return clearPoints + fallenPiecesPoints;
   }
 
   level() {
@@ -106,10 +124,6 @@ class Game {
   drop() {
     this.board.drop();
   }
-
-  // switchView() {
-  //   return this.board.switchView;
-  // }
 }
 
 module.exports = Game;
