@@ -4,7 +4,7 @@ body, div, ul, li, header, h1, td, th, table, section, button {
   border: none;
   font-weight: inherit;
   color: inherit;
-  background: inherit;
+  background: transparent;
   list-style: none;
   font-size: inherit;
 }
@@ -15,4 +15,6 @@ body {
   font-size: 35px;
   letter-spacing: 3px;
   font-family: 'Rubik', sans-serif;
+  width: 100vw;
+  height: 100vh;
 }

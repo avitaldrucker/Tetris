@@ -19,17 +19,41 @@ class Game {
 
   draw() {
     if (!this.over()) {
-      let sidebar = document.getElementById("sidebar");
+      let scoreContainer = document.getElementById("score-container");
 
       const scoreboardToRemove = document.getElementById("scoreboard");
 
       if (scoreboardToRemove) {
-        sidebar.removeChild(scoreboardToRemove);
+        scoreContainer.removeChild(scoreboardToRemove);
       }
 
-      sidebar.appendChild(this.createScoreboard());
+      scoreContainer.appendChild(this.createScoreboard());
     }
 
+  }
+
+  createScoreboard() {
+    const scoreboard = document.createElement("div");
+    scoreboard.id = "scoreboard";
+
+    scoreboard.appendChild(this.createLevelHeader());
+    scoreboard.appendChild(this.createScoreHeader());
+    return scoreboard;
+  }
+
+  createLevelHeader() {
+    let levelHeader = document.createElement("H1");
+    let levelText = document.createTextNode("Level: " + this.level());
+    levelHeader.appendChild(levelText);
+    return levelHeader;
+  }
+
+  createScoreHeader() {
+    let scoreHeader = document.createElement("H1");
+    scoreHeader.id = "score-header";
+    let scoreText = document.createTextNode("Score: " + this.score());
+    scoreHeader.appendChild(scoreText);
+    return scoreHeader;
   }
 
   createGameOverSection() {
@@ -59,29 +83,9 @@ class Game {
     return button;
   }
 
-  createScoreboard() {
-    const scoreboard = document.createElement("div");
-    scoreboard.id = "scoreboard";
 
-    scoreboard.appendChild(this.createLevelHeader());
-    scoreboard.appendChild(this.createScoreHeader());
-    return scoreboard;
-  }
 
-  createLevelHeader() {
-    let levelHeader = document.createElement("H1");
-    let levelText = document.createTextNode("Level: " + this.level());
-    levelHeader.appendChild(levelText);
-    return levelHeader;
-  }
 
-  createScoreHeader() {
-    let scoreHeader = document.createElement("H1");
-    scoreHeader.id = "score-header";
-    let scoreText = document.createTextNode("Score: " + this.score());
-    scoreHeader.appendChild(scoreText);
-    return scoreHeader;
-  }
 
   update() {
     this.board.update();
