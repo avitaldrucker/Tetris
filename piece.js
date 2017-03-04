@@ -303,8 +303,8 @@ const oPiece = {
 
 const sPiece = {
   symbol: "S",
-  coords: [[0, 3], [-1, 4], [0, 4], [-1, 5]],
-  center: [-1, 4],
+  coords: [[0, 4], [-1, 5], [0, 5], [-1, 6]],
+  center: [-1, 5],
   spinnable: false,
   draw: (ctx) => {
     prepareDraw(ctx);
