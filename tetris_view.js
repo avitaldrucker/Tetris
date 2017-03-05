@@ -89,7 +89,7 @@ class View {
   drawRestartGame() {
 
     const main = document.getElementById("main");
-    const pageContainer = document.getElementById("page-container");
+    const gameOverContainer = document.getElementById("game-over-container");
     if (main) {
       main.className = "invisible";
     }
@@ -114,7 +114,7 @@ class View {
       gameOverSection.appendChild(gameOverHeader);
       gameOverSection.appendChild(button);
 
-      pageContainer.appendChild(gameOverSection);
+      gameOverContainer.appendChild(gameOverSection);
 
       document.getElementById("button").addEventListener("click", (e) => {
         let main = document.getElementById("main");

@@ -203,3 +203,27 @@ th {
   color: gray;
   transition: all 0.3s ease 0s;
 }
+
+ul.footer {
+  display: flex;
+  width: 50%;
+  margin: 0 auto;
+  justify-content: space-around;
+}
+
+
+footer {
+  position: fixed;
+  bottom: 3%;
+  width: 100%;
+}
+
+li a:hover {
+  cursor: pointer;
+  color: black;
+  transition: all 0.3s ease 0s;
+}
+a {
+  transition: all 0.3s ease 0s;
+
+}

@@ -1,4 +1,4 @@
-body, div, ul, li, header, h1, td, th, table, section, button {
+body, div, ul, li, header, h1, td, th, table, section, button, a {
   margin: 0;
   padding: 0;
   border: none;
@@ -7,6 +7,7 @@ body, div, ul, li, header, h1, td, th, table, section, button {
   background: transparent;
   list-style: none;
   font-size: inherit;
+  text-decoration: none;
 }
 
 body {
