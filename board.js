@@ -13,6 +13,8 @@ class Board {
 
     this.switchView = false;
     this.ctx = ctx;
+
+    this.dropped = false;
   }
 
   newGrid() {
@@ -106,21 +108,32 @@ class Board {
   }
 
   updatePreview() {
-    if (!this.over()) { this.nextPiece.draw(this.ctx); }
+    if (!this.over()) {
+      this.nextPiece.draw(this.ctx);
+    } else {
+      this.clearPreview();
+    }
+  }
+
+  clearPreview() {
+    this.ctx.clearRect(0, 0, 300, 300);
   }
 
   drop() {
     if (this.fallingPiece.validCoords(this.fallingPiece.coords)) {
       this.fallingPiece.drop();
     }
+
     if (!this.over()) {
-      this.piecesFallen += 1;
+      if (!this.dropped) { this.piecesFallen += 1; }
       this.clearRows();
       this.spawnPiece();
     }
+    this.dropped = true;
   }
 
   update() {
+    this.dropped = false;
     const topPiece = this.fallingPiece.aboveTop();
     if (!this.fallingPiece.fallen()) { this.fallingPiece.moveDown(); }
 

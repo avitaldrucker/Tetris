@@ -77,6 +77,7 @@ class View {
     }
 
     if (this.game.switchView && !this.switchedView) {
+      this.intervalTime = 600;
       setTimeout(this.drawRestartGame.bind(this), 1000);
       this.switchedView = true;
     }
@@ -120,7 +121,7 @@ class View {
         main.className = "visible";
         gameOverSection.className = "invisible";
         this.switchedView = false;
-        this.game = new Game();
+        this.game = new Game(this.ctx);
         this.start();
       });
     }
