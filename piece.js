@@ -248,9 +248,9 @@ const iPiece = {
     ctx.fillStyle = "cyan";
 
     addSquare(ctx, 0, 0);
+    addSquare(ctx, 25, 0);
     addSquare(ctx, 50, 0);
-    addSquare(ctx, 100, 0);
-    addSquare(ctx, 150, 0);
+    addSquare(ctx, 75, 0);
   }
 };
 
@@ -262,10 +262,10 @@ const jPiece = { symbol: "J",
     prepareDraw(ctx);
     ctx.fillStyle = "blue";
 
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 125, 0);
-    addSquare(ctx, 125, 50);
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
+    addSquare(ctx, 62.5, 25);
   }
 };
 
@@ -278,10 +278,10 @@ const lPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "orange";
 
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 25, 50);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 125, 0);
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 12.5, 25);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
   }
 }
 
@@ -294,10 +294,10 @@ const oPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "yellow";
 
+    addSquare(ctx, 25, 0);
+    addSquare(ctx, 25, 25);
     addSquare(ctx, 50, 0);
-    addSquare(ctx, 50, 50);
-    addSquare(ctx, 100, 0);
-    addSquare(ctx, 100, 50);
+    addSquare(ctx, 50, 25);
   }
 };
 
@@ -310,10 +310,10 @@ const sPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "green";
 
-    addSquare(ctx, 25, 50);
-    addSquare(ctx, 75, 50);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 125, 0);
+    addSquare(ctx, 12.5, 25);
+    addSquare(ctx, 37.5, 25);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
   }
 };
 
@@ -326,10 +326,10 @@ const tPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "purple";
 
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 125, 0);
-    addSquare(ctx, 75, 50);
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
+    addSquare(ctx, 37.5, 25);
   }
 };
 
@@ -342,10 +342,10 @@ const zPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "red";
 
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 75, 50);
-    addSquare(ctx, 125, 50);
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 37.5, 25);
+    addSquare(ctx, 62.5, 25);
   }
 };
 
@@ -365,12 +365,12 @@ Piece.PIECES = [iPiece, jPiece, lPiece, oPiece, sPiece, tPiece, zPiece];
  const prepareDraw = (ctx) => {
    ctx.clearRect(0, 0, 300, 300);
    ctx.strokeStyle = "black";
-   ctx.lineWidth = 3;
+   ctx.lineWidth = 1;
  }
 
  const addSquare = (ctx, x, y) => {
-   ctx.fillRect(x, y, 50, 50);
-   ctx.strokeRect(x, y, 50, 50);
+   ctx.fillRect(x, y, 25, 25);
+   ctx.strokeRect(x, y, 25, 25);
  }
 
 module.exports = Piece;

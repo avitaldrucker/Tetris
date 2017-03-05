@@ -3,8 +3,8 @@ li.tile {
   border-style: solid;
   border-color: rgba(0, 0, 0, 0.7);
 
-  width: 50px;
-  height: 50px;
+  width: 25px;
+  height: 25px;
 }
 
 ul.board {
@@ -17,65 +17,45 @@ ul.command li {
 
 li.I {
   background: rgba(0, 255, 255, 1);
-  /*opacity: 1;*/
   border: 1px solid rgba(0, 0, 0, 0.7);
-
   z-index: 5;
 }
 
 li.J {
   background: rgba(0, 0, 255, 1);
-    /*opacity: 1;*/
   border: 1px solid rgba(0, 0, 0, 0.7);
-
-    z-index: 5;
-
+  z-index: 5;
 }
 
 li.L {
   background: rgba(255, 153, 0, 1);
-    /*opacity: 1;*/
   border: 1px solid rgba(0, 0, 0, 0.7);
-
-    z-index: 5;
-
+  z-index: 5;
 }
 
 
 li.O {
   background: rgba(255, 255, 0, 1);
-    /*opacity: 1;*/
   border: 1px solid rgba(0, 0, 0, 0.7);
-
-    z-index: 5;
-
+  z-index: 5;
 }
 
 li.S {
   background: rgba(0, 255, 0, 1);
-    /*opacity: 1;*/
   border: 1px solid rgba(0, 0, 0, .7);
-
-    z-index: 5;
-
+  z-index: 5;
 }
 
 li.T {
   background: rgba(85, 26, 139, 1);
-    /*opacity: 1;*/
   border: 1px solid rgba(0, 0, 0, 0.7);
-
-    z-index: 5;
-
+  z-index: 5;
 }
 
 li.Z {
   background: rgba(255, 0, 0, 1);
-    /*opacity: 1;*/
   border: 1px solid rgba(0, 0, 0, 0.7);
-
-    z-index: 5;
-
+  z-index: 5;
 }
 
 .visible {
@@ -92,8 +72,8 @@ main.visible {
 }
 
 button {
-  height: 50px;
-  width: 50px;
+  height: 25px;
+  width: 25px;
 }
 
 main {
@@ -114,19 +94,17 @@ div#root {
 
 div#board {
   background: black;
-  /*opacity: 0.7;*/
-    opacity: 0.8;
+  opacity: 0.8;
   box-shadow: 9px 6px 71px 7px rgba(0, 0, 0, 0.7);
 }
 
 
 #sidebar {
-  width: 360px;
-  /*border: 1px solid black;*/
-  padding: 40px 20px 0px 20px;
+  width: 180px;
+  padding: 20px 10px 0px 10px;
   background: rgba(120, 0, 28, 0.7);
-    box-shadow: 9px 6px 71px 7px rgba(50,0,0,0.7);
-  /*color: black;*/
+  box-shadow: 9px 6px 71px 7px rgba(50,0,0,0.7);
+  min-height: 500px;
 }
 
 h1.score-header {
@@ -135,7 +113,7 @@ h1.score-header {
 }
 
 .action {
-  padding-right: 50px;
+  padding-right: 20px;
 }
 
 th {
@@ -146,27 +124,26 @@ th {
 
 div.canvas-container {
   border: 1px solid black;
-  width: 250px;
-  height: 200px;
-  margin: 0px 50px 140px 50px;
+  width: 125px;
+  height: 100px;
+  margin: 0px 25px 70px 25px;
   background: rgba(0, 0, 0, 0.7);
 }
 
 canvas {
-  margin-top: 50px;
-  margin-right: 22px;
-  margin-left: 22px;
-
+  margin-top: 25px;
+  margin-right: 11px;
+  margin-left: 11px;
 }
 
 h1.tetris-header {
-  font-size: 120px;
+  font-size: 60px;
   font-family: 'Rubik', sans-serif;
   text-transform: uppercase;
   letter-spacing: 8px;
   font-weight: 600;
   margin-bottom: 100px;
-  padding-top: 100px;
+  padding-top: 50px;
 }
 
 div.page-container {
@@ -178,26 +155,26 @@ div.page-container {
 
 table {
   width: 100%;
-  margin-top: 140px;
+  margin-top: 70px;
   margin-left: 2%;
   margin-right: 2%;
-  font-size: 30px;
+  font-size: 14px;
   font-weight: 300;
 }
 
 #score-header {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 td {
-  padding-bottom: 10px;
+  padding-bottom: 3px;
 }
 th {
-  padding-bottom: 10px;
+  padding-bottom: 3px;
 }
 
 #game-over-header {
-  font-size: 70px;
+  font-size: 35px;
   font-family: 'Rubik', sans-serif;
   text-transform: uppercase;
   letter-spacing: 8px;
@@ -206,18 +183,18 @@ th {
 }
 
 #button {
-  margin: 100px auto;
+  margin: 50px auto;
   background: black;
   text-align: center;
   display: block;
-  width: 600px;
-  border-radius: 69px;
-  height: 100px;
+  width: 299px;
+  border-radius: 35px;
+  height: 50px;
   text-transform: uppercase;
   letter-spacing: 8px;
   font-weight: 600;
-  font-size: 70px;
-  padding: 10px 0px;
+  font-size: 35px;
+  padding: 5px 10px 5px 14px;
   transition: all 0.3s ease 0s;
 }
 
