@@ -236,7 +236,7 @@ class StaticPiece extends Piece {
   }
 }
 
-module.exports = Piece;
+
 
 const iPiece = {
   symbol: "I",
@@ -372,3 +372,5 @@ Piece.PIECES = [iPiece, jPiece, lPiece, oPiece, sPiece, tPiece, zPiece];
    ctx.fillRect(x, y, 50, 50);
    ctx.strokeRect(x, y, 50, 50);
  }
+
+module.exports = Piece;
