@@ -989,9 +989,9 @@ var iPiece = {
     ctx.fillStyle = "cyan";
 
     addSquare(ctx, 0, 0);
+    addSquare(ctx, 25, 0);
     addSquare(ctx, 50, 0);
-    addSquare(ctx, 100, 0);
-    addSquare(ctx, 150, 0);
+    addSquare(ctx, 75, 0);
   }
 };
 
@@ -1003,10 +1003,10 @@ var jPiece = { symbol: "J",
     prepareDraw(ctx);
     ctx.fillStyle = "blue";
 
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 125, 0);
-    addSquare(ctx, 125, 50);
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
+    addSquare(ctx, 62.5, 25);
   }
 };
 
@@ -1019,10 +1019,10 @@ var lPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "orange";
 
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 25, 50);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 125, 0);
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 12.5, 25);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
   }
 };
 
@@ -1035,10 +1035,10 @@ var oPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "yellow";
 
+    addSquare(ctx, 25, 0);
+    addSquare(ctx, 25, 25);
     addSquare(ctx, 50, 0);
-    addSquare(ctx, 50, 50);
-    addSquare(ctx, 100, 0);
-    addSquare(ctx, 100, 50);
+    addSquare(ctx, 50, 25);
   }
 };
 
@@ -1051,10 +1051,10 @@ var sPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "green";
 
-    addSquare(ctx, 25, 50);
-    addSquare(ctx, 75, 50);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 125, 0);
+    addSquare(ctx, 12.5, 25);
+    addSquare(ctx, 37.5, 25);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
   }
 };
 
@@ -1067,10 +1067,10 @@ var tPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "purple";
 
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 125, 0);
-    addSquare(ctx, 75, 50);
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
+    addSquare(ctx, 37.5, 25);
   }
 };
 
@@ -1083,10 +1083,10 @@ var zPiece = {
     prepareDraw(ctx);
     ctx.fillStyle = "red";
 
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 75, 0);
-    addSquare(ctx, 75, 50);
-    addSquare(ctx, 125, 50);
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 37.5, 25);
+    addSquare(ctx, 62.5, 25);
   }
 };
 
@@ -1105,12 +1105,12 @@ Piece.randomPiece = function () {
 var prepareDraw = function prepareDraw(ctx) {
   ctx.clearRect(0, 0, 300, 300);
   ctx.strokeStyle = "black";
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 1;
 };
 
 var addSquare = function addSquare(ctx, x, y) {
-  ctx.fillRect(x, y, 50, 50);
-  ctx.strokeRect(x, y, 50, 50);
+  ctx.fillRect(x, y, 25, 25);
+  ctx.strokeRect(x, y, 25, 25);
 };
 
 module.exports = Piece;
@@ -1127,8 +1127,8 @@ var Game = __webpack_require__(0);
 
 document.addEventListener("DOMContentLoaded", function () {
   var canvas = document.getElementById("canvas");
-  canvas.width = 200;
-  canvas.height = 100;
+  canvas.width = 100;
+  canvas.height = 50;
   var ctx = canvas.getContext("2d");
 
   var game = new Game(ctx);
