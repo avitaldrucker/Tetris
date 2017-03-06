@@ -1,50 +1,64 @@
-#Functionality and MVP#
+#Tetris#
 
-In this game, users will be able to:
-- [ ] Start, pause, and quit the game
-- [ ] Rotate, speed up the descent of Tetrimonos, and allow the Tetriminos to drop immediately
+[Live version][live]
 
-In addition, this project will include:
-- [ ] Instructions on how to play the game, in a sidebar
-- [ ] A production README
+[live]: http://avitaldrucker.com/Tetris/
 
+Tetris is a browser-based, tile-matching game. The goal is to clear as many rows as possible by matching tiles.
 
-#Wireframes#
-This app will consist of a single screen with game board, preview screen for the next piece, stats on the current game, instructions on which key presses lead to which actions, and nav links to my Github and LinkedIn. Game controls include the up arrow to rotate a piece 90 degrees clockwise, left and right arrows to move the piece of one tile left or right respectively, the down arrow to increase the speed of the piece's descent, and the space bar to instantly drop the piece.
+##How to Play##
+Tiles fall down the screen, leading to rows of fallen tiles. To clear rows, strategically place tiles so that they touch each other, minimizing gaps between tiles. A full row of tiles will be cleared. If the stack of fallen tiles hits the top of the grid, the player has lost. Players can move the tiles left and right through the left and right arrow keys, respectively. Tiles can be rotated with up key, and tiles' descent speed can be increased in with the down arrow key. Tiles can be instantly dropped with the space bar.
 
+##Technologies Used##
+* JavaScript
+* Native browser DOM API
+* HTML5 Canvas
 
-![Wireframe](/wireframe.png)
+##Technical Implementation Details##
 
-#Architecture and Technologies#
+###Rotation###
 
-This project will be implemented with the following technologies:
-* Vanilla DOM for starting the game, pausing the game, and quitting the game;
-* HTML5 Canvas for drawing the game's grid and the moving pieces; and
-* Webpack to bundle and serve up the various scripts.
+I implemented rotation through the subclasses SpinnablePiece, TogglingPiece, and StaticPiece, which inherit from the Piece class. Rotation is generally implemented by transforming every coordinate of a piece about the center coordinate of the piece, which is treated as the origin. Instances of SpinnablePiece rotate 90 degrees clockwise. On the other hand, if a player rotates a TogglingPiece, the piece will rotate 90 degrees clockwise but then upon another rotation will rotate 90 degrees counterclockwise. StaticPiece instances do not rotate. Below is the general spin() method of Piece, which uses the boolean clockwise:
 
-There will be three scripts in addition to the webpack entry file in this project:
-* game_view.js: this will have as properties ctx and the game, and will bind key handlers, start the game, and cause the game to progress through each step and be drawn at each requestAnimationFrame()
+```javascript
+spin(clockwise) {
 
-* game.js: this will have a board and will have game level as a property and the method step(), which will use condition logic. If no piece is falling, it will spawn a piece, which adds a piece to the board's array of pieces. If a piece is falling, it will move the piece down. If the piece can fall no further, it will check if the game is lost, and if not, it will check if any full rows can be cleared.
+  const rotatedCoords = this.rotatedCoords(clockwise);
+  if (this.validCoords(rotatedCoords)) {
 
-* board.js: The board will have as a property all pieces' speed of descent; it also has an array of all the pieces as a property. The board also has a method to check whether any rows are full. It also has a method to clear rows.
+    this.clearBoard();
 
-* piece.js: this file will have an overall Piece class, and multiple classes that inherit from Piece. Each of these pieces will have as a property a signifier to identify the shape of the piece. Pieces have the methods rotate() and fall(). They also have methods to move left and right. Each piece has an x, y coordinate signifying its position.
+    this.coords = [];
 
-#Implementation Timeline#
+    rotatedCoords.forEach((coord) => {
+      this.board.grid[coord[0]][coord[1]] = this;
+      this.coords.push(coord);
+    }, this);
 
-**Day 1**: Set up Node modules, including getting Webpack up and running. Create webpack.config.js and package.json. Write a basic entry file and a skeleton of game_view.js, game.js, board.js, and piece.js. Learn enough Canvas to start rendering. Goals for the day:
-* Get a green bundle with webpack
-* Render the instructions pane with HTML & CSS, the game's empty board with Canvas, the preview pane with Canvas, and the game stats with HTML & CSS.
+  }
+}
+```
+###Use of Asynchronous Callbacks###
 
-**Day 2**: Learn more Canvas. Implement functionality for checking whether it is possible for a piece to fall down further, or to move left or right. Implement the board's ability to clear rows and move the rows above that cleared row down. Implement the game's step() method, so that pieces fall down the grid and are shown. Make sure pieces are rendered properly. If you have time, implement key binders to move the pieces let and right.
+I used asynchronous callbacks to implement the main functionality of the game. When the page content is loaded, `animate()` is called, which invokes `requestAnimationFrame()` and `animate()` itself. I thus implemented recursively a continuous repainting. I also implemented through `setInterval()` a continuous update of the state of the game: the board will spawn a piece if there is no piece currently following, and otherwise will move the falling piece down. Below is the board's `update()` method:
 
-**Day 3**: Implement wall kicks for pieces so that rotation can occur at edges. Install the rest of the controllers for the user to interact with the game, including rotation, the down arrow (to increase the speed of descent), and the space bar (to immediately drop the piece). Use jQuery to implement a user's ability to start, pause, and quit a game.
+```javascript
+update() {
+  this.dropped = false;
+  const topPiece = this.fallingPiece.aboveTop();
+  if (!this.fallingPiece.fallen()) { this.fallingPiece.moveDown(); }
 
-**Day 4**. Implement increases in descent speed from increasing levels. Style the game professionally.
+  if (topPiece) { this.updatePreview(); }
 
+  if (this.fallingPiece.fallen() && !this.over()) {
+    this.piecesFallen += 1;
+    this.clearRows();
+    this.spawnPiece();
+  }
+}
+```
 
-#Bonus features#
-- [ ] Spin pieces left
-- [ ] Hold a piece
-- [ ] Choose a level when starting the game
+The frequency in which update() is called decreases as the level progresses, leading to faster tile falls.
+
+###Preview of the Upcoming Piece###
+At the start of the game, the board creates a current piece and a future piece. As the game progresses, whenever a piece has fallen, the future piece becomes the current piece and the board instantiates a new future piece to display. I used HTML5 Canvas to display the upcoming piece in the sidebar.
