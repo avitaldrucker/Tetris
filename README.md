@@ -65,7 +65,7 @@ The frequency in which update() is called decreases as the level progresses, lea
 ###Preview of the Upcoming Piece###
 At the start of the game, the board creates a current piece and a future piece. As the game progresses, whenever a piece has fallen, the future piece becomes the current piece and the board instantiates a new future piece to display. I used HTML5 Canvas to display the upcoming piece in the sidebar.
 
-###Future Features###
+##Future Features##
 - [ ] Functionality for pausing the game
 - [ ] Leaderboard
 - [ ] Music that can be muted
