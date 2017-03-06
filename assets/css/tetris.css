@@ -79,6 +79,7 @@ button {
 main {
   justify-content: center;
   margin: 0 auto;
+  margin-bottom: 50px;
   width: 40%;
   display: flex;
 }
@@ -149,7 +150,7 @@ h1.tetris-header {
 div.page-container {
   background-image: url("https://s-media-cache-ak0.pinimg.com/originals/7b/8a/98/7b8a983faf282cab258cbfe9f5c226bb.jpg");
   background-size: cover;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
 }
 
@@ -213,7 +214,7 @@ ul.footer {
 
 
 footer {
-  position: fixed;
+  /*position: fixed;*/
   bottom: 3%;
   width: 100%;
 }

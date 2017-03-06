@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,9 +73,424 @@
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _board = __webpack_require__(2);
+var _spinnable_piece = __webpack_require__(4);
+
+var _spinnable_piece2 = _interopRequireDefault(_spinnable_piece);
+
+var _static_piece = __webpack_require__(5);
+
+var _static_piece2 = _interopRequireDefault(_static_piece);
+
+var _toggling_piece = __webpack_require__(6);
+
+var _toggling_piece2 = _interopRequireDefault(_toggling_piece);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Piece = function () {
+  function Piece(options) {
+    _classCallCheck(this, Piece);
+
+    this.symbol = options["symbol"];
+    this.coords = options["coords"];
+    this.draw = options.draw;
+  }
+
+  _createClass(Piece, [{
+    key: 'moveLeft',
+    value: function moveLeft() {
+      if (this.canMoveSideways("l")) {
+
+        var oldCoords = this.coords;
+        this.clearBoard();
+
+        this.addModifiedCoords("col", -1);
+
+        this.center = [this.center[0], this.center[1] - 1];
+      }
+    }
+  }, {
+    key: 'drop',
+    value: function drop() {
+      while (!this.fallen()) {
+        this.moveDown();
+      }
+    }
+  }, {
+    key: 'canMoveSideways',
+    value: function canMoveSideways(direction) {
+      return !this.fallen() && !this.aboveTop() && !this.atBorder(direction) && !this.neighborsAt(direction);
+    }
+  }, {
+    key: 'differentPieceAtPos',
+    value: function differentPieceAtPos(pos) {
+      return this.board.gridAt(pos) && !this.coordsIncluded(pos);
+    }
+  }, {
+    key: 'neighborsAt',
+    value: function neighborsAt(dir) {
+      for (var i = 0; i < this.coords.length; i++) {
+        var _coords$i = _slicedToArray(this.coords[i], 2),
+            row = _coords$i[0],
+            col = _coords$i[1];
+
+        var neighborPos = dir === "l" ? [row, col - 1] : [row, col + 1];
+
+        if (this.differentPieceAtPos(neighborPos)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }, {
+    key: 'moveRight',
+    value: function moveRight() {
+      if (this.canMoveSideways("r")) {
+        var oldCoords = this.coords;
+
+        this.clearBoard();
+
+        this.addModifiedCoords("col", 1);
+
+        this.center = [this.center[0], this.center[1] + 1];
+      }
+    }
+  }, {
+    key: 'atBorder',
+    value: function atBorder(dir) {
+      var borderIndex = dir === "l" ? 0 : 9;
+
+      for (var i = 0; i < this.coords.length; i++) {
+        var _coords$i2 = _slicedToArray(this.coords[i], 2),
+            row = _coords$i2[0],
+            col = _coords$i2[1];
+
+        if (col === borderIndex) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }, {
+    key: 'fallen',
+    value: function fallen() {
+      for (var i = 0; i < this.coords.length; i++) {
+        var _coords$i3 = _slicedToArray(this.coords[i], 2),
+            row = _coords$i3[0],
+            col = _coords$i3[1];
+
+        if (row === 19 || this.differentPieceAtPos([row + 1, col])) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }, {
+    key: 'coordsIncluded',
+    value: function coordsIncluded(coord) {
+
+      for (var i = 0; i < this.coords.length; i++) {
+        var _coords$i4 = _slicedToArray(this.coords[i], 2),
+            ownRow = _coords$i4[0],
+            ownCol = _coords$i4[1];
+
+        if (ownRow === coord[0] && ownCol === coord[1]) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }, {
+    key: 'rotatedCoords',
+    value: function rotatedCoords(clockwise) {
+      var _this = this;
+
+      var coords = [];
+
+      this.coords.forEach(function (coord) {
+        coords.push(_this.rotateCoord(coord, clockwise));
+      }, this);
+
+      return coords;
+    }
+  }, {
+    key: 'rotateCoord',
+    value: function rotateCoord(coord, clockwise) {
+      var _center = _slicedToArray(this.center, 2),
+          centerRow = _center[0],
+          centerCol = _center[1];
+
+      var posFromCenter = [coord[0] - centerRow, coord[1] - centerCol];
+      var row = posFromCenter[0],
+          col = posFromCenter[1];
+
+
+      if (clockwise) {
+        return [col + centerRow, row * -1 + centerCol];
+      } else {
+        return [col * -1 + centerRow, row + centerCol];
+      }
+    }
+  }, {
+    key: 'spin',
+    value: function spin(clockwise) {
+      var _this2 = this;
+
+      var rotatedCoords = this.rotatedCoords(clockwise);
+      if (this.validCoords(rotatedCoords)) {
+
+        this.clearBoard();
+
+        this.coords = [];
+
+        rotatedCoords.forEach(function (coord) {
+          _this2.board.grid[coord[0]][coord[1]] = _this2;
+          _this2.coords.push(coord);
+        }, this);
+      }
+    }
+  }, {
+    key: 'validCoords',
+    value: function validCoords(coords) {
+      for (var i = 0; i < coords.length; i++) {
+        if (this.validPos(coords[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }, {
+    key: 'validPos',
+    value: function validPos(pos) {
+      var _pos = _slicedToArray(pos, 2),
+          row = _pos[0],
+          col = _pos[1];
+
+      return row < 0 || row > 19 || col < 0 || col > 9 || this.differentPieceAtPos(pos);
+    }
+  }, {
+    key: 'moveDown',
+    value: function moveDown() {
+      if (!this.aboveTop()) {
+        this.clearBoard();
+      }
+
+      var oldCoords = this.coords;
+
+      this.addModifiedCoords("row", 1);
+      this.center = [this.center[0] + 1, this.center[1]];
+    }
+  }, {
+    key: 'addModifiedCoords',
+    value: function addModifiedCoords(line, num) {
+      var _this3 = this;
+
+      var oldCoords = this.coords;
+      this.coords = [];
+
+      oldCoords.forEach(function (coord) {
+        var _coord = _slicedToArray(coord, 2),
+            row = _coord[0],
+            col = _coord[1];
+
+        line === "row" ? row = row + num : col = col + num;
+
+        _this3.coords.push([row, col]);
+        _this3.board.grid[row][col] = _this3;
+      }, this);
+    }
+  }, {
+    key: 'clearBoard',
+    value: function clearBoard() {
+      var _this4 = this;
+
+      this.coords.forEach(function (coord) {
+        var _coord2 = _slicedToArray(coord, 2),
+            row = _coord2[0],
+            col = _coord2[1];
+
+        _this4.board.grid[row][col] = null;
+      }, this);
+    }
+  }, {
+    key: 'aboveTop',
+    value: function aboveTop() {
+      for (var i = 0; i < this.coords.length; i++) {
+        if (this.coords[i][0] === -1) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }]);
+
+  return Piece;
+}();
+
+exports.default = Piece;
+
+
+var iPiece = {
+  symbol: "I",
+  coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]],
+  center: [-1, 4],
+  spinnable: false,
+  draw: function draw(ctx) {
+    prepareDraw(ctx);
+    ctx.fillStyle = "cyan";
+
+    addSquare(ctx, 0, 0);
+    addSquare(ctx, 25, 0);
+    addSquare(ctx, 50, 0);
+    addSquare(ctx, 75, 0);
+  }
+};
+
+var jPiece = { symbol: "J",
+  coords: [[-1, 4], [-1, 5], [-1, 6], [0, 6]],
+  center: [-1, 5],
+  spinnable: true,
+  draw: function draw(ctx) {
+    prepareDraw(ctx);
+    ctx.fillStyle = "blue";
+
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
+    addSquare(ctx, 62.5, 25);
+  }
+};
+
+var lPiece = {
+  symbol: "L",
+  coords: [[-1, 4], [-1, 5], [0, 4], [-1, 6]],
+  center: [-1, 5],
+  spinnable: true,
+  draw: function draw(ctx) {
+    prepareDraw(ctx);
+    ctx.fillStyle = "orange";
+
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 12.5, 25);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
+  }
+};
+
+var oPiece = {
+  symbol: "O",
+  coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]],
+  center: [-1, 4],
+  spinnable: false,
+  draw: function draw(ctx) {
+    prepareDraw(ctx);
+    ctx.fillStyle = "yellow";
+
+    addSquare(ctx, 25, 0);
+    addSquare(ctx, 25, 25);
+    addSquare(ctx, 50, 0);
+    addSquare(ctx, 50, 25);
+  }
+};
+
+var sPiece = {
+  symbol: "S",
+  coords: [[0, 4], [-1, 5], [0, 5], [-1, 6]],
+  center: [-1, 5],
+  spinnable: false,
+  draw: function draw(ctx) {
+    prepareDraw(ctx);
+    ctx.fillStyle = "green";
+
+    addSquare(ctx, 12.5, 25);
+    addSquare(ctx, 37.5, 25);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
+  }
+};
+
+var tPiece = {
+  symbol: "T",
+  coords: [[-1, 4], [-1, 5], [0, 5], [-1, 6]],
+  center: [-1, 5],
+  spinnable: true,
+  draw: function draw(ctx) {
+    prepareDraw(ctx);
+    ctx.fillStyle = "purple";
+
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 62.5, 0);
+    addSquare(ctx, 37.5, 25);
+  }
+};
+
+var zPiece = {
+  symbol: "Z",
+  coords: [[-1, 4], [-1, 5], [0, 5], [0, 6]],
+  center: [-1, 5],
+  spinnable: false,
+  draw: function draw(ctx) {
+    prepareDraw(ctx);
+    ctx.fillStyle = "red";
+
+    addSquare(ctx, 12.5, 0);
+    addSquare(ctx, 37.5, 0);
+    addSquare(ctx, 37.5, 25);
+    addSquare(ctx, 62.5, 25);
+  }
+};
+
+Piece.PIECES = [iPiece, jPiece, lPiece, oPiece, sPiece, tPiece, zPiece];
+
+Piece.randomPiece = function () {
+  var randIndex = Math.floor(Math.random() * Piece.PIECES.length);
+  var options = Piece.PIECES[randIndex];
+  if (options.spinnable && options.center) {
+    return new _spinnable_piece2.default(options);
+  } else {
+    return new _toggling_piece2.default(options);
+  }
+};
+
+var prepareDraw = function prepareDraw(ctx) {
+  ctx.clearRect(0, 0, 300, 300);
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+};
+
+var addSquare = function addSquare(ctx, x, y) {
+  ctx.fillRect(x, y, 25, 25);
+  ctx.strokeRect(x, y, 25, 25);
+};
+
+// module.exports = Piece;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _board = __webpack_require__(3);
 
 var _board2 = _interopRequireDefault(_board);
 
@@ -235,7 +650,7 @@ var Game = function () {
 module.exports = Game;
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -243,9 +658,9 @@ module.exports = Game;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _tetris_game = __webpack_require__(0);
+var _game = __webpack_require__(1);
 
-var _tetris_game2 = _interopRequireDefault(_tetris_game);
+var _game2 = _interopRequireDefault(_game);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -348,7 +763,7 @@ var View = function () {
       var _this = this;
 
       var main = document.getElementById("main");
-      var pageContainer = document.getElementById("page-container");
+      var gameOverContainer = document.getElementById("game-over-container");
       if (main) {
         main.className = "invisible";
       }
@@ -377,14 +792,14 @@ var View = function () {
         gameOverSection.appendChild(gameOverHeader);
         gameOverSection.appendChild(button);
 
-        pageContainer.appendChild(gameOverSection);
+        gameOverContainer.appendChild(gameOverSection);
 
         document.getElementById("button").addEventListener("click", function (e) {
           var main = document.getElementById("main");
           main.className = "visible";
           gameOverSection.className = "invisible";
           _this.switchedView = false;
-          _this.game = new _tetris_game2.default(_this.ctx);
+          _this.game = new _game2.default(_this.ctx);
           _this.start();
         });
       }
@@ -397,7 +812,7 @@ var View = function () {
 module.exports = View;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -407,7 +822,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _piece = __webpack_require__(3);
+var _piece = __webpack_require__(0);
 
 var _piece2 = _interopRequireDefault(_piece);
 
@@ -650,266 +1065,29 @@ var Board = function () {
 module.exports = Board;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _piece = __webpack_require__(0);
+
+var _piece2 = _interopRequireDefault(_piece);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Piece = function () {
-  function Piece(options) {
-    _classCallCheck(this, Piece);
-
-    this.symbol = options["symbol"];
-    this.coords = options["coords"];
-    this.draw = options.draw;
-  }
-
-  _createClass(Piece, [{
-    key: "moveLeft",
-    value: function moveLeft() {
-      if (this.canMoveSideways("l")) {
-
-        var oldCoords = this.coords;
-        this.clearBoard();
-
-        this.addModifiedCoords("col", -1);
-
-        this.center = [this.center[0], this.center[1] - 1];
-      }
-    }
-  }, {
-    key: "drop",
-    value: function drop() {
-      while (!this.fallen()) {
-        this.moveDown();
-      }
-    }
-  }, {
-    key: "canMoveSideways",
-    value: function canMoveSideways(direction) {
-      return !this.fallen() && !this.aboveTop() && !this.atBorder(direction) && !this.neighborsAt(direction);
-    }
-  }, {
-    key: "differentPieceAtPos",
-    value: function differentPieceAtPos(pos) {
-      return this.board.gridAt(pos) && !this.coordsIncluded(pos);
-    }
-  }, {
-    key: "neighborsAt",
-    value: function neighborsAt(dir) {
-      for (var i = 0; i < this.coords.length; i++) {
-        var _coords$i = _slicedToArray(this.coords[i], 2),
-            row = _coords$i[0],
-            col = _coords$i[1];
-
-        var neighborPos = dir === "l" ? [row, col - 1] : [row, col + 1];
-
-        if (this.differentPieceAtPos(neighborPos)) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-  }, {
-    key: "moveRight",
-    value: function moveRight() {
-      if (this.canMoveSideways("r")) {
-        var oldCoords = this.coords;
-
-        this.clearBoard();
-
-        this.addModifiedCoords("col", 1);
-
-        this.center = [this.center[0], this.center[1] + 1];
-      }
-    }
-  }, {
-    key: "atBorder",
-    value: function atBorder(dir) {
-      var borderIndex = dir === "l" ? 0 : 9;
-
-      for (var i = 0; i < this.coords.length; i++) {
-        var _coords$i2 = _slicedToArray(this.coords[i], 2),
-            row = _coords$i2[0],
-            col = _coords$i2[1];
-
-        if (col === borderIndex) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-  }, {
-    key: "fallen",
-    value: function fallen() {
-      for (var i = 0; i < this.coords.length; i++) {
-        var _coords$i3 = _slicedToArray(this.coords[i], 2),
-            row = _coords$i3[0],
-            col = _coords$i3[1];
-
-        if (row === 19 || this.differentPieceAtPos([row + 1, col])) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-  }, {
-    key: "coordsIncluded",
-    value: function coordsIncluded(coord) {
-
-      for (var i = 0; i < this.coords.length; i++) {
-        var _coords$i4 = _slicedToArray(this.coords[i], 2),
-            ownRow = _coords$i4[0],
-            ownCol = _coords$i4[1];
-
-        if (ownRow === coord[0] && ownCol === coord[1]) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-  }, {
-    key: "rotatedCoords",
-    value: function rotatedCoords(clockwise) {
-      var _this = this;
-
-      var coords = [];
-
-      this.coords.forEach(function (coord) {
-        coords.push(_this.rotateCoord(coord, clockwise));
-      }, this);
-
-      return coords;
-    }
-  }, {
-    key: "rotateCoord",
-    value: function rotateCoord(coord, clockwise) {
-      var _center = _slicedToArray(this.center, 2),
-          centerRow = _center[0],
-          centerCol = _center[1];
-
-      var posFromCenter = [coord[0] - centerRow, coord[1] - centerCol];
-      var row = posFromCenter[0],
-          col = posFromCenter[1];
-
-
-      if (clockwise) {
-        return [col + centerRow, row * -1 + centerCol];
-      } else {
-        return [col * -1 + centerRow, row + centerCol];
-      }
-    }
-  }, {
-    key: "spin",
-    value: function spin(clockwise) {
-      var _this2 = this;
-
-      var rotatedCoords = this.rotatedCoords(clockwise);
-      if (this.validCoords(rotatedCoords)) {
-
-        this.clearBoard();
-
-        this.coords = [];
-
-        rotatedCoords.forEach(function (coord) {
-          _this2.board.grid[coord[0]][coord[1]] = _this2;
-          _this2.coords.push(coord);
-        }, this);
-      }
-    }
-  }, {
-    key: "validCoords",
-    value: function validCoords(coords) {
-      for (var i = 0; i < coords.length; i++) {
-        if (this.validPos(coords[i])) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }, {
-    key: "validPos",
-    value: function validPos(pos) {
-      var _pos = _slicedToArray(pos, 2),
-          row = _pos[0],
-          col = _pos[1];
-
-      return row < 0 || row > 19 || col < 0 || col > 9 || this.differentPieceAtPos(pos);
-    }
-  }, {
-    key: "moveDown",
-    value: function moveDown() {
-      if (!this.aboveTop()) {
-        this.clearBoard();
-      }
-
-      var oldCoords = this.coords;
-
-      this.addModifiedCoords("row", 1);
-      this.center = [this.center[0] + 1, this.center[1]];
-    }
-  }, {
-    key: "addModifiedCoords",
-    value: function addModifiedCoords(line, num) {
-      var _this3 = this;
-
-      var oldCoords = this.coords;
-      this.coords = [];
-
-      oldCoords.forEach(function (coord) {
-        var _coord = _slicedToArray(coord, 2),
-            row = _coord[0],
-            col = _coord[1];
-
-        line === "row" ? row = row + num : col = col + num;
-
-        _this3.coords.push([row, col]);
-        _this3.board.grid[row][col] = _this3;
-      }, this);
-    }
-  }, {
-    key: "clearBoard",
-    value: function clearBoard() {
-      var _this4 = this;
-
-      this.coords.forEach(function (coord) {
-        var _coord2 = _slicedToArray(coord, 2),
-            row = _coord2[0],
-            col = _coord2[1];
-
-        _this4.board.grid[row][col] = null;
-      }, this);
-    }
-  }, {
-    key: "aboveTop",
-    value: function aboveTop() {
-      for (var i = 0; i < this.coords.length; i++) {
-        if (this.coords[i][0] === -1) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-  }]);
-
-  return Piece;
-}();
 
 var SpinnablePiece = function (_Piece) {
   _inherits(SpinnablePiece, _Piece);
@@ -917,53 +1095,56 @@ var SpinnablePiece = function (_Piece) {
   function SpinnablePiece(options) {
     _classCallCheck(this, SpinnablePiece);
 
-    var _this5 = _possibleConstructorReturn(this, (SpinnablePiece.__proto__ || Object.getPrototypeOf(SpinnablePiece)).call(this, options));
+    debugger;
 
-    _this5.center = options.center;
-    return _this5;
+    var _this = _possibleConstructorReturn(this, (SpinnablePiece.__proto__ || Object.getPrototypeOf(SpinnablePiece)).call(this, options));
+
+    _this.center = options.center;
+    return _this;
   }
 
   _createClass(SpinnablePiece, [{
-    key: "spin",
+    key: 'spin',
     value: function spin() {
-      Piece.prototype.spin.call(this, true);
+      _piece2.default.prototype.spin.call(this, true);
     }
   }]);
 
   return SpinnablePiece;
-}(Piece);
+}(_piece2.default);
 
-var TogglingPiece = function (_Piece2) {
-  _inherits(TogglingPiece, _Piece2);
+// module.exports = SpinnablePiece;
 
-  function TogglingPiece(options) {
-    _classCallCheck(this, TogglingPiece);
 
-    var _this6 = _possibleConstructorReturn(this, (TogglingPiece.__proto__ || Object.getPrototypeOf(TogglingPiece)).call(this, options));
+exports.default = SpinnablePiece;
 
-    _this6.rotated = false;
-    _this6.center = options.center;
-    return _this6;
-  }
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
 
-  _createClass(TogglingPiece, [{
-    key: "spin",
-    value: function spin() {
-      if (this.rotated && this.symbol !== "O") {
-        Piece.prototype.spin.call(this, false);
-        this.rotated = false;
-      } else if (this.symbol !== "O") {
-        Piece.prototype.spin.call(this, true);
-        this.rotated = true;
-      }
-    }
-  }]);
+"use strict";
 
-  return TogglingPiece;
-}(Piece);
 
-var StaticPiece = function (_Piece3) {
-  _inherits(StaticPiece, _Piece3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _piece = __webpack_require__(0);
+
+var _piece2 = _interopRequireDefault(_piece);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var StaticPiece = function (_Piece) {
+  _inherits(StaticPiece, _Piece);
 
   function StaticPiece(options) {
     _classCallCheck(this, StaticPiece);
@@ -972,158 +1153,86 @@ var StaticPiece = function (_Piece3) {
   }
 
   _createClass(StaticPiece, [{
-    key: "spin",
+    key: 'spin',
     value: function spin() {}
   }]);
 
   return StaticPiece;
-}(Piece);
+}(_piece2.default);
 
-var iPiece = {
-  symbol: "I",
-  coords: [[-1, 3], [-1, 4], [-1, 5], [-1, 6]],
-  center: [-1, 4],
-  spinnable: false,
-  draw: function draw(ctx) {
-    prepareDraw(ctx);
-    ctx.fillStyle = "cyan";
+// module.exports = StaticPiece;
 
-    addSquare(ctx, 0, 0);
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 50, 0);
-    addSquare(ctx, 75, 0);
-  }
-};
 
-var jPiece = { symbol: "J",
-  coords: [[-1, 4], [-1, 5], [-1, 6], [0, 6]],
-  center: [-1, 5],
-  spinnable: true,
-  draw: function draw(ctx) {
-    prepareDraw(ctx);
-    ctx.fillStyle = "blue";
-
-    addSquare(ctx, 12.5, 0);
-    addSquare(ctx, 37.5, 0);
-    addSquare(ctx, 62.5, 0);
-    addSquare(ctx, 62.5, 25);
-  }
-};
-
-var lPiece = {
-  symbol: "L",
-  coords: [[-1, 4], [-1, 5], [0, 4], [-1, 6]],
-  center: [-1, 5],
-  spinnable: true,
-  draw: function draw(ctx) {
-    prepareDraw(ctx);
-    ctx.fillStyle = "orange";
-
-    addSquare(ctx, 12.5, 0);
-    addSquare(ctx, 12.5, 25);
-    addSquare(ctx, 37.5, 0);
-    addSquare(ctx, 62.5, 0);
-  }
-};
-
-var oPiece = {
-  symbol: "O",
-  coords: [[-1, 4], [-1, 5], [0, 4], [0, 5]],
-  center: [-1, 4],
-  spinnable: false,
-  draw: function draw(ctx) {
-    prepareDraw(ctx);
-    ctx.fillStyle = "yellow";
-
-    addSquare(ctx, 25, 0);
-    addSquare(ctx, 25, 25);
-    addSquare(ctx, 50, 0);
-    addSquare(ctx, 50, 25);
-  }
-};
-
-var sPiece = {
-  symbol: "S",
-  coords: [[0, 4], [-1, 5], [0, 5], [-1, 6]],
-  center: [-1, 5],
-  spinnable: false,
-  draw: function draw(ctx) {
-    prepareDraw(ctx);
-    ctx.fillStyle = "green";
-
-    addSquare(ctx, 12.5, 25);
-    addSquare(ctx, 37.5, 25);
-    addSquare(ctx, 37.5, 0);
-    addSquare(ctx, 62.5, 0);
-  }
-};
-
-var tPiece = {
-  symbol: "T",
-  coords: [[-1, 4], [-1, 5], [0, 5], [-1, 6]],
-  center: [-1, 5],
-  spinnable: true,
-  draw: function draw(ctx) {
-    prepareDraw(ctx);
-    ctx.fillStyle = "purple";
-
-    addSquare(ctx, 12.5, 0);
-    addSquare(ctx, 37.5, 0);
-    addSquare(ctx, 62.5, 0);
-    addSquare(ctx, 37.5, 25);
-  }
-};
-
-var zPiece = {
-  symbol: "Z",
-  coords: [[-1, 4], [-1, 5], [0, 5], [0, 6]],
-  center: [-1, 5],
-  spinnable: false,
-  draw: function draw(ctx) {
-    prepareDraw(ctx);
-    ctx.fillStyle = "red";
-
-    addSquare(ctx, 12.5, 0);
-    addSquare(ctx, 37.5, 0);
-    addSquare(ctx, 37.5, 25);
-    addSquare(ctx, 62.5, 25);
-  }
-};
-
-Piece.PIECES = [iPiece, jPiece, lPiece, oPiece, sPiece, tPiece, zPiece];
-
-Piece.randomPiece = function () {
-  var randIndex = Math.floor(Math.random() * Piece.PIECES.length);
-  var options = Piece.PIECES[randIndex];
-  if (options.spinnable && options.center) {
-    return new SpinnablePiece(options);
-  } else {
-    return new TogglingPiece(options);
-  }
-};
-
-var prepareDraw = function prepareDraw(ctx) {
-  ctx.clearRect(0, 0, 300, 300);
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 1;
-};
-
-var addSquare = function addSquare(ctx, x, y) {
-  ctx.fillRect(x, y, 25, 25);
-  ctx.strokeRect(x, y, 25, 25);
-};
-
-module.exports = Piece;
+exports.default = StaticPiece;
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var View = __webpack_require__(1);
-var Game = __webpack_require__(0);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _piece = __webpack_require__(0);
+
+var _piece2 = _interopRequireDefault(_piece);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TogglingPiece = function (_Piece) {
+  _inherits(TogglingPiece, _Piece);
+
+  function TogglingPiece(options) {
+    _classCallCheck(this, TogglingPiece);
+
+    var _this = _possibleConstructorReturn(this, (TogglingPiece.__proto__ || Object.getPrototypeOf(TogglingPiece)).call(this, options));
+
+    _this.rotated = false;
+    _this.center = options.center;
+    return _this;
+  }
+
+  _createClass(TogglingPiece, [{
+    key: "spin",
+    value: function spin() {
+      if (this.rotated && this.symbol !== "O") {
+        _piece2.default.prototype.spin.call(this, false);
+        this.rotated = false;
+      } else if (this.symbol !== "O") {
+        _piece2.default.prototype.spin.call(this, true);
+        this.rotated = true;
+      }
+    }
+  }]);
+
+  return TogglingPiece;
+}(_piece2.default);
+
+// module.exports = TogglingPiece;
+
+
+exports.default = TogglingPiece;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var View = __webpack_require__(2);
+var Game = __webpack_require__(1);
 
 document.addEventListener("DOMContentLoaded", function () {
   var canvas = document.getElementById("canvas");

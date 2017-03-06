@@ -2,7 +2,7 @@ var path = require("path");
 
 module.exports = {
   context: __dirname,
-  entry: "./tetris.js",
+  entry: "./lib/tetris",
   output: {
     filename: "bundle.js"
   },
