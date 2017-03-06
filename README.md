@@ -9,6 +9,8 @@ Tetris is a browser-based, tile-matching game. The goal is to clear as many rows
 ##How to Play##
 Tiles fall down the screen, leading to rows of fallen tiles. To clear rows, strategically place tiles so that they touch each other, minimizing gaps between tiles. A full row of tiles will be cleared. If the stack of fallen tiles hits the top of the grid, the player has lost. Players can move the tiles left and right through the left and right arrow keys, respectively. Tiles can be rotated with up key, and tiles' descent speed can be increased in with the down arrow key. Tiles can be instantly dropped with the space bar.
 
+![Tetris](/assets/tetris.png)
+
 ##Technologies Used##
 * JavaScript
 * Native browser DOM API
@@ -62,3 +64,11 @@ The frequency in which update() is called decreases as the level progresses, lea
 
 ###Preview of the Upcoming Piece###
 At the start of the game, the board creates a current piece and a future piece. As the game progresses, whenever a piece has fallen, the future piece becomes the current piece and the board instantiates a new future piece to display. I used HTML5 Canvas to display the upcoming piece in the sidebar.
+
+###Todos###
+- [ ] Functionality for pausing the game
+- [ ] Leaderboard
+- [ ] Music that can be muted
+- [ ] Counterclockwise spin
+- [ ] Ability to hold a piece
+- [ ] Option for a player to choose a level when starting
