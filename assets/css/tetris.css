@@ -79,7 +79,7 @@ button {
 main {
   justify-content: center;
   margin: 0 auto;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   width: 40%;
   display: flex;
 }
@@ -142,9 +142,9 @@ h1.tetris-header {
   font-family: 'Rubik', sans-serif;
   text-transform: uppercase;
   letter-spacing: 8px;
-  font-weight: 600;
-  margin-bottom: 100px;
-  padding-top: 50px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  padding-top: 30px;
 }
 
 div.page-container {
@@ -179,8 +179,12 @@ th {
   font-family: 'Rubik', sans-serif;
   text-transform: uppercase;
   letter-spacing: 8px;
-  font-weight: 600;
+  font-weight: 500;
   color: black;
+}
+
+section#game-over-container.visible{
+  padding-bottom: 378px;
 }
 
 #button {
@@ -193,7 +197,7 @@ th {
   height: 50px;
   text-transform: uppercase;
   letter-spacing: 8px;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 35px;
   padding: 5px 10px 5px 14px;
   transition: all 0.3s ease 0s;

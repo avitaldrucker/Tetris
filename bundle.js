@@ -666,55 +666,73 @@ var View = function () {
     this.switchedView = false;
     this.keysBound = false;
     this.ctx = ctx;
+    this.replay = false;
   }
 
   _createClass(View, [{
     key: "bindKeyHandlers",
     value: function bindKeyHandlers() {
+      this.addTileManipulationListeners();
+      this.addSpeedResetListener();
+    }
+  }, {
+    key: "accelerateDescent",
+    value: function accelerateDescent() {
+      clearInterval(this.interval);
+      this.interval = setInterval(this.game.update.bind(this.game), 40);
+      this.downKeyPressed = true;
+    }
+  }, {
+    key: "addTileManipulationListeners",
+    value: function addTileManipulationListeners() {
+      var _this = this;
+
+      var gameControlCodes = [37, 38, 39, 40, 32];
+
       document.addEventListener("keydown", function (e) {
+
+        if (gameControlCodes.includes(e.which)) {
+          e.preventDefault();
+        }
 
         switch (e.which) {
           case 37:
-            e.preventDefault();
-            this.game.moveLeft();
+            _this.game.moveLeft();
             break;
 
           case 38:
-            e.preventDefault();
-            this.game.spin();
+            _this.game.spin();
             break;
 
           case 39:
-            e.preventDefault();
-            this.game.moveRight();
+            _this.game.moveRight();
             break;
 
           case 40:
-            e.preventDefault();
-            if (!this.downKeyPressed) {
-              clearInterval(this.interval);
-              this.interval = setInterval(this.game.update.bind(this.game), 40);
-              this.downKeyPressed = true;
+            if (!_this.downKeyPressed) {
+              _this.accelerateDescent();
             }
             break;
 
           case 32:
-            e.preventDefault();
-            this.game.drop();
+            _this.game.drop();
             break;
-
-          default:
-            return;
         }
-      }.bind(this));
+      });
+    }
+  }, {
+    key: "addSpeedResetListener",
+    value: function addSpeedResetListener() {
+      var _this2 = this;
 
+      var keyUpCallback = function keyUpCallback(e) {};
       document.addEventListener("keyup", function (e) {
         if (e.key === "ArrowDown") {
-          clearInterval(this.interval);
-          this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
-          this.downKeyPressed = false;
+          clearInterval(_this2.interval);
+          _this2.interval = setInterval(_this2.game.update.bind(_this2.game), _this2.intervalTime);
+          _this2.downKeyPressed = false;
         }
-      }.bind(this));
+      });
     }
   }, {
     key: "start",
@@ -753,7 +771,7 @@ var View = function () {
   }, {
     key: "drawRestartGame",
     value: function drawRestartGame() {
-      var _this = this;
+      var _this3 = this;
 
       var main = document.getElementById("main");
       var gameOverContainer = document.getElementById("game-over-container");
@@ -761,49 +779,46 @@ var View = function () {
         main.className = "invisible";
       }
 
-      var gameOverSection = document.getElementById("game-over");
-      if (gameOverSection) {
-        gameOverSection.className = "visible";
+      gameOverContainer.className = "visible";
+
+      if (!this.replay) {
+        gameOverContainer.appendChild(this.createGameOverHeader());
+        gameOverContainer.appendChild(this.createPlayAgainButton());
+        this.replay = true;
       }
 
-      if (!gameOverSection) {
-        gameOverSection = document.createElement("section");
-        gameOverSection.id = "game-over";
-        if (gameOverSection) {
-          gameOverSection.className = "visible";
-        }
+      document.getElementById("button").addEventListener("click", function (e) {
+        var main = document.getElementById("main");
+        main.className = "visible";
+        gameOverContainer.className = "invisible";
+        _this3.switchedView = false;
+        _this3.game = new _game2.default(_this3.ctx);
+        _this3.start();
+      });
+    }
+  }, {
+    key: "createGameOverHeader",
+    value: function createGameOverHeader() {
+      var gameOverHeader = document.createElement("H1");
+      gameOverHeader.id = "game-over-header";
+      var gameOverHeaderText = document.createTextNode("Game over");
+      gameOverHeader.appendChild(gameOverHeaderText);
 
-        var gameOverHeader = document.createElement("H1");
-        gameOverHeader.id = "game-over-header";
-        var gameOverHeaderText = document.createTextNode("Game over");
-        gameOverHeader.appendChild(gameOverHeaderText);
+      return gameOverHeader;
+    }
+  }, {
+    key: "createPlayAgainButton",
+    value: function createPlayAgainButton() {
+      var button = document.createElement("button");
+      button.textContent = "Play again";
+      button.id = "button";
 
-        var button = document.createElement("button");
-        button.textContent = "Play again";
-        button.id = "button";
-
-        gameOverSection.appendChild(gameOverHeader);
-        gameOverSection.appendChild(button);
-
-        gameOverContainer.appendChild(gameOverSection);
-
-        document.getElementById("button").addEventListener("click", function (e) {
-          var main = document.getElementById("main");
-          main.className = "visible";
-          gameOverSection.className = "invisible";
-          _this.switchedView = false;
-          _this.game = new _game2.default(_this.ctx);
-          _this.start();
-        });
-      }
+      return button;
     }
   }]);
 
   return View;
 }();
-
-// module.exports = View;
-
 
 exports.default = View;
 
@@ -1121,8 +1136,6 @@ var SpinnablePiece = function (_Piece) {
   function SpinnablePiece(options) {
     _classCallCheck(this, SpinnablePiece);
 
-    console.log(_piece2.default);
-
     var _this = _possibleConstructorReturn(this, (SpinnablePiece.__proto__ || Object.getPrototypeOf(SpinnablePiece)).call(this, options));
 
     _this.center = options.center;
@@ -1138,9 +1151,6 @@ var SpinnablePiece = function (_Piece) {
 
   return SpinnablePiece;
 }(_piece2.default);
-
-// module.exports = SpinnablePiece;
-
 
 exports.default = SpinnablePiece;
 
