@@ -188,11 +188,13 @@ section#game-over-container.visible{
 }
 
 #button {
+  font-family: 'Rubik', sans-serif;
   margin: 50px auto;
   background: black;
   text-align: center;
   display: block;
   width: 299px;
+  min-width: 400px;
   border-radius: 35px;
   height: 50px;
   text-transform: uppercase;
