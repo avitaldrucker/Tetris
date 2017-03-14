@@ -758,9 +758,9 @@ var View = function () {
 
       if (this.game.switchView && this.gameView) {
         setTimeout(this.drawStartGame.bind(this), 1000);
+      } else {
+        requestAnimationFrame(this.animate.bind(this));
       }
-
-      requestAnimationFrame(this.animate.bind(this));
     }
   }, {
     key: "switchView",
