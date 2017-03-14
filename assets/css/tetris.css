@@ -187,7 +187,7 @@ section#game-over-container.visible{
   padding-bottom: 378px;
 }
 
-#button {
+button {
   font-family: 'Rubik', sans-serif;
   margin: 50px auto;
   background: black;
@@ -220,7 +220,6 @@ ul.footer {
 
 
 footer {
-  /*position: fixed;*/
   bottom: 3%;
   width: 100%;
 }
@@ -230,7 +229,11 @@ li a:hover {
   color: black;
   transition: all 0.3s ease 0s;
 }
+
 a {
   transition: all 0.3s ease 0s;
+}
 
+button.top-margin {
+  margin: 86px auto;
 }
