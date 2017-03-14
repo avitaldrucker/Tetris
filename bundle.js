@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -82,10 +82,6 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// import SpinnablePiece from './spinnable_piece';
-// import StaticPiece from './static_piece';
-// import TogglingPiece from './toggling_piece';
 
 var Piece = function () {
   function Piece(options) {
@@ -485,7 +481,6 @@ var Game = function () {
     _classCallCheck(this, Game);
 
     this.board = new _board2.default(ctx);
-    window.board = this.board;
     this.mostRecentLevel = this.level();
     this.gameOverButtonCreated = false;
     this.switchView = false;
@@ -628,9 +623,6 @@ var Game = function () {
 
   return Game;
 }();
-
-// module.exports = Game;
-
 
 exports.default = Game;
 
@@ -841,13 +833,9 @@ var _piece = __webpack_require__(0);
 
 var _piece2 = _interopRequireDefault(_piece);
 
-var _toggling_piece = __webpack_require__(6);
+var _toggling_piece = __webpack_require__(5);
 
 var _toggling_piece2 = _interopRequireDefault(_toggling_piece);
-
-var _static_piece = __webpack_require__(5);
-
-var _static_piece2 = _interopRequireDefault(_static_piece);
 
 var _spinnable_piece = __webpack_require__(4);
 
@@ -1100,9 +1088,6 @@ var Board = function () {
   return Board;
 }();
 
-// module.exports = Board;
-
-
 exports.default = Board;
 
 /***/ }),
@@ -1179,53 +1164,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var StaticPiece = function (_Piece) {
-  _inherits(StaticPiece, _Piece);
-
-  function StaticPiece(options) {
-    _classCallCheck(this, StaticPiece);
-
-    return _possibleConstructorReturn(this, (StaticPiece.__proto__ || Object.getPrototypeOf(StaticPiece)).call(this, options));
-  }
-
-  _createClass(StaticPiece, [{
-    key: 'spin',
-    value: function spin() {}
-  }]);
-
-  return StaticPiece;
-}(_piece2.default);
-
-// module.exports = StaticPiece;
-
-
-exports.default = StaticPiece;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _piece = __webpack_require__(0);
-
-var _piece2 = _interopRequireDefault(_piece);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 var TogglingPiece = function (_Piece) {
   _inherits(TogglingPiece, _Piece);
 
@@ -1255,13 +1193,10 @@ var TogglingPiece = function (_Piece) {
   return TogglingPiece;
 }(_piece2.default);
 
-// module.exports = TogglingPiece;
-
-
 exports.default = TogglingPiece;
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1277,8 +1212,6 @@ var _game2 = _interopRequireDefault(_game);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const View = require('./view');
-// const Game = require('./game');
 document.addEventListener("DOMContentLoaded", function () {
   var canvas = document.getElementById("canvas");
   canvas.width = 100;
