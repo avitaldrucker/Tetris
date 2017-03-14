@@ -648,17 +648,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var View = function () {
-  function View(game, ctx) {
+  function View(ctx) {
     _classCallCheck(this, View);
 
-    this.game = game;
     this.bindKeyHandlers = this.bindKeyHandlers.bind(this);
     this.intervalTime = 600;
     this.downKeyPressed = false;
-    this.switchedView = false;
-    this.keysBound = false;
+    this.gameView = true;
     this.ctx = ctx;
-    this.replay = false;
+    this.replayed = false;
+    this.played = false;
   }
 
   _createClass(View, [{
@@ -717,11 +716,10 @@ var View = function () {
     value: function addSpeedResetListener() {
       var _this2 = this;
 
-      var keyUpCallback = function keyUpCallback(e) {};
       document.addEventListener("keyup", function (e) {
         if (e.key === "ArrowDown") {
           clearInterval(_this2.interval);
-          _this2.interval = setInterval(_this2.game.update.bind(_this2.game), _this2.intervalTime);
+          _this2.resetInterval();
           _this2.downKeyPressed = false;
         }
       });
@@ -729,9 +727,9 @@ var View = function () {
   }, {
     key: "start",
     value: function start() {
-      if (!this.keysBound) {
+      if (!this.played) {
         this.bindKeyHandlers();
-        this.keysBound = true;
+        this.played = true;
       }
 
       requestAnimationFrame(this.animate.bind(this));
@@ -739,6 +737,12 @@ var View = function () {
       if (this.interval) {
         clearInterval(this.interval);
       }
+      this.intervalTime = 600;
+      this.resetInterval();
+    }
+  }, {
+    key: "resetInterval",
+    value: function resetInterval() {
       this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
     }
   }, {
@@ -749,41 +753,55 @@ var View = function () {
       if (this.game.newLevel()) {
         clearInterval(this.interval);
         this.intervalTime -= 40;
-        this.interval = setInterval(this.game.update.bind(this.game), this.intervalTime);
+        this.resetInterval();
       }
 
-      if (this.game.switchView && !this.switchedView) {
-        this.intervalTime = 600;
-        setTimeout(this.drawRestartGame.bind(this), 1000);
-        this.switchedView = true;
+      if (this.game.switchView && this.gameView) {
+        setTimeout(this.drawStartGame.bind(this), 1000);
       }
 
       requestAnimationFrame(this.animate.bind(this));
     }
   }, {
-    key: "drawRestartGame",
-    value: function drawRestartGame() {
-      var _this3 = this;
-
+    key: "switchView",
+    value: function switchView(newGame) {
       var main = document.getElementById("main");
       var gameOverContainer = document.getElementById("game-over-container");
-      if (main) {
-        main.className = "invisible";
-      }
 
-      gameOverContainer.className = "visible";
-
-      if (!this.replay) {
-        gameOverContainer.appendChild(this.createGameOverHeader());
-        gameOverContainer.appendChild(this.createPlayAgainButton());
-        this.replay = true;
-      }
-
-      document.getElementById("button").addEventListener("click", function (e) {
-        var main = document.getElementById("main");
+      if (newGame) {
         main.className = "visible";
         gameOverContainer.className = "invisible";
-        _this3.switchedView = false;
+        this.gameView = true;
+      } else {
+        main.className = "invisible";
+        gameOverContainer.className = "visible";
+        this.gameView = false;
+      }
+    }
+  }, {
+    key: "drawStartGame",
+    value: function drawStartGame() {
+      this.switchView(false);
+
+      var gameOverContainer = document.getElementById("game-over-container");
+
+      if (!this.played) {
+        gameOverContainer.appendChild(this.createPlayButton());
+        this.addPlayListener();
+      } else if (!this.replayed) {
+        var startButton = document.getElementById("button");
+        gameOverContainer.insertBefore(this.createGameOverHeader(), startButton);
+        startButton.textContent = "Play again";
+        this.replayed = true;
+      }
+    }
+  }, {
+    key: "addPlayListener",
+    value: function addPlayListener() {
+      var _this3 = this;
+
+      document.getElementById("button").addEventListener("click", function (e) {
+        _this3.switchView(true);
         _this3.game = new _game2.default(_this3.ctx);
         _this3.start();
       });
@@ -799,10 +817,10 @@ var View = function () {
       return gameOverHeader;
     }
   }, {
-    key: "createPlayAgainButton",
-    value: function createPlayAgainButton() {
+    key: "createPlayButton",
+    value: function createPlayButton(buttonText) {
       var button = document.createElement("button");
-      button.textContent = "Play again";
+      button.textContent = "Start";
       button.id = "button";
 
       return button;
@@ -1218,8 +1236,7 @@ document.addEventListener("DOMContentLoaded", function () {
   canvas.height = 50;
   var ctx = canvas.getContext("2d");
 
-  var game = new _game2.default(ctx);
-  new _view2.default(game, ctx).start();
+  new _view2.default(ctx).drawStartGame();
 });
 
 /***/ })
