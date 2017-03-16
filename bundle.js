@@ -792,6 +792,7 @@ var View = function () {
         var startButton = document.getElementById("button");
         gameOverContainer.insertBefore(this.createGameOverHeader(), startButton);
         startButton.textContent = "Play again";
+        startButton.className = "";
         this.replayed = true;
       }
     }
@@ -822,6 +823,7 @@ var View = function () {
       var button = document.createElement("button");
       button.textContent = "Start";
       button.id = "button";
+      button.className = "top-margin";
 
       return button;
     }
